@@ -8,7 +8,7 @@ std::vector<double> ReadVecFromFile(size_t size, const std::string& path);
 
 /// <summary>
 /// Класс объектов матриц, хранящихся в разреженном строчно-столбцовом виде
-/// Точность хранения элементов - double
+/// <para> Точность хранения элементов - double </para>
 /// </summary>
 class Matrix {
 // Переменные матрицы

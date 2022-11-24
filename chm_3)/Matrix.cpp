@@ -18,17 +18,6 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    return vec;
 }
 
-   /// <summary>
-   /// Массив индексов строк/столбцов, вида 0, 0, 0 + k2, ..., 0+k2+...+kn, где ki - число элементов в i cтроке/столбце
-   /// <para> Помимо этого первый элемент i строки можно найти как ggl[ig[i]] </para>
-   /// <para> Пример массива для матрицы 3х3: </para>
-   /// 
-   /// <para> Матрица: </para>
-   /// <para> | 1 2 0 | </para>
-   /// <para> | 3 8 1 | </para>
-   /// <para> | 0 2 4 | </para>
-   /// <para> ig: { 0, 0, 1, 2 } </para>
-   /// </summary>
 
 // Методы матрицы
    uint16_t Matrix::Size() const { return di.size(); }
