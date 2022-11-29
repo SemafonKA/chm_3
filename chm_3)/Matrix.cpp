@@ -46,6 +46,29 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
       return result;
    }
 
+   /// <summary>
+   /// Умножение матрицы на вектор
+   /// </summary>
+   vector<double>& Matrix::MultToVec(const vector<double>& right, vector<double>& result) const {
+      if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
+      if (right.size() != result.size()) throw runtime_error("Размеры матрицы и результирующего вектора не совпадают.");      
+
+      for (uint16_t i = 0; i < result.size(); i++)
+      {
+         // Умножаем диагональ
+         result[i] = di[i] * right[i];
+
+         // Умножаем нижний и верхний треугольники
+         for (uint32_t j = ig[i]; j < ig[i + 1]; j++)
+         {
+            result[i] += ggl[j] * right[jg[j]];
+            result[jg[j]] += ggu[j] * right[i];
+         }
+      }
+
+      return result;
+   }
+
    vector<double> Matrix::operator*(const vector<double>& right) const {
       return MultToVec(right);
    }
@@ -53,7 +76,31 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    /// <summary>
    /// Умножение транспонированной матрицы на вектор
    /// </summary>
-   vector<double> Matrix::TranspMultToVec(const vector<double>& right) {
+   vector<double>& Matrix::TranspMultToVec(const vector<double>& right, vector<double>& result) const {
+      if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
+      if (right.size() != result.size()) throw runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+
+      for (uint16_t i = 0; i < result.size(); i++)
+      {
+         // Умножаем диагональ
+         result[i] = di[i] * right[i];
+
+         // Умножаем нижний и верхний треугольники
+         for (uint32_t j = ig[i]; j < ig[i + 1]; j++)
+         {
+            result[i] += ggu[j] * right[jg[j]];
+            result[jg[j]] += ggl[j] * right[i];
+         }
+      }
+
+      return result;
+   }
+
+
+   /// <summary>
+   /// Умножение транспонированной матрицы на вектор
+   /// </summary>
+   vector<double> Matrix::TranspMultToVec(const vector<double>& right) const {
       if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
 
       vector<double> result(right.size());

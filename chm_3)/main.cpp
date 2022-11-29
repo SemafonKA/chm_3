@@ -20,6 +20,16 @@ namespace Vec {
 
       return res;
    }
+
+   // l or r may be similar vectors to ans
+   inline void Mult(const vector<double>& l, const vector<double>& r, vector<double>& ans) {
+      if (ans.size() != l.size() || ans.size() != r.size()) throw runtime_error("Ошибка: размеры векторов должны совпадать.");
+
+      for (size_t i = 0; i < ans.size(); i++)
+      {
+         ans[i] = l[i] * r[i];
+      }
+   }
 }
 
 namespace IterSolvers {
@@ -28,89 +38,179 @@ namespace IterSolvers {
 
    namespace MSG_Assimetric {
       size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
-      vector<double> r = A * x;
-      for (uint16_t i = 0; i < r.size(); i++) r[i] = f[i] - r[i]; // r0 = f - A * x
-      r = A.TranspMultToVec(r);                             // r0 = A^t * (f - A * x)
+         vector<double> r = A * x;
+         for (uint16_t i = 0; i < r.size(); i++) r[i] = f[i] - r[i]; // r0 = f - A * x
+         r = A.TranspMultToVec(r);                             // r0 = A^t * (f - A * x)
 
-      vector<double> z = r;               // z0
-      vector<double> t;
+         vector<double> z = r;               // z0
+         vector<double> t(x.size());
 
-      double rPrevScalar = Vec::Scalar(r, r);         // (r_k-1, r_k-1)
-      double rScalar = 0;
-      double a = 0;                       // alpha_k,
-      double b = 0;                       // beta_k
-      double normF = sqrt(Vec::Scalar(f, f));   // ||f||
-      size_t size = x.size();
-      eps = DBL_MAX;
+         double rPrevScalar = Vec::Scalar(r, r);         // (r_k-1, r_k-1)
+         double rScalar = 0;
+         double a = 0;                       // alpha_k,
+         double b = 0;                       // beta_k
+         double normF = Vec::Scalar(f, f);   // ||f||
+         size_t size = x.size();
+         eps = DBL_MAX;
 
-      size_t iter;
-      for (iter = 1; iter <= maxIter && eps > minEps; iter++)
-      {
-         t = A.TranspMultToVec(A * z);          // t = A^t * A * z_k-1
-         a = rPrevScalar / Vec::Scalar(t, z);   // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
-
-         for (uint16_t i = 0; i < size; i++)      
+         size_t iter;
+         for (iter = 1; iter <= maxIter && eps > minEps; iter++)
          {
-            x[i] += a * z[i];                         // x_k = x_k-1 + a * z_k-1
-            r[i] -= a * t[i];                         // r_k = r_k-1 - a * t_k-1
+            A.TranspMultToVec(A * z, t);          // t = A^t * A * z_k-1
+            a = rPrevScalar / Vec::Scalar(t, z);   // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               x[i] += a * z[i];                         // x_k = x_k-1 + a * z_k-1
+               r[i] -= a * t[i];                         // r_k = r_k-1 - a * t_k-1
+            }
+            rScalar = Vec::Scalar(r, r);
+            b = rScalar / rPrevScalar;                   // b = (r_k, r_k) / (r_k-1, r_k-1)
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               z[i] = r[i] + b * z[i];                   // z_k = r_k + b * z_k-1
+            }
+
+            rPrevScalar = rScalar;
+            eps = sqrt(rPrevScalar / normF);
+
+            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            if (debugOutput)
+            {
+               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+            }
+            if (isinf(eps))
+            {
+               break;
+            }
          }
-         rScalar = Vec::Scalar(r, r);
-         b = rScalar / rPrevScalar;                   // b = (r_k, r_k) / (r_k-1, r_k-1)
 
-         for (uint16_t i = 0; i < size; i++)
-         {
-            z[i] = r[i] + b * z[i];                   // z_k = r_k + b * z_k-1
-         }
-
-         rPrevScalar = rScalar;
-         eps = sqrt(rPrevScalar) / normF;
-
-         // Выводим на то же место, что и раньше (со сдвигом каретки)
          if (debugOutput)
          {
-            cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+            cout << endl;
+            if (isinf(eps))
+            {
+               cout << "Выход по переполнению метода" << endl << endl;
+            }
+            else if (iter > maxIter)
+            {
+               cout << "Выход по числу итераций" << endl << endl;
+            }
+            else
+            {
+               cout << "Выход по относительной невязке" << endl << endl;
+            }
          }
-         if (isinf(eps))
-         {
-            break;
-         }
+
+         return iter;
       }
 
-      if (debugOutput)
-      {
-         cout << endl;
-         if (isinf(eps))
-         {
-            cout << "Выход по переполнению метода" << endl << endl;
-         }
-         else if (iter > maxIter)
-         {
-            cout << "Выход по числу итераций" << endl << endl;
-         }
-         else
-         {
-            cout << "Выход по относительной невязке" << endl << endl;
-         }
-      }
+      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
+         size_t size = x.size();
 
-      return iter;
-   }
+         vector<double> D(size);             // D = inverted sqrt of diag A
+         for (uint16_t i = 0; i < size; i++) D[i] = sqrt(A.di[i]);
+
+         vector<double> local_x(size);
+         Vec::Mult(D, x, local_x);
+         for (uint16_t i = 0; i < size; i++) D[i] = 1 / D[i];
+
+         vector<double> r(size);             // r = U^-t * A^t * L^-t * L^-1 (f - A * x)
+         vector<double> tmp = A * x;
+         for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i];
+         Vec::Mult(D, tmp, tmp);
+         Vec::Mult(D, tmp, tmp);
+         A.TranspMultToVec(tmp, r);
+         Vec::Mult(D, r, r);                
+
+         vector<double> z = r;
+
+         vector<double> t(size);             // t = U^-1 * A^t * L^-t * L^-1 * A * U^-1 * z
+
+         double rPrevScalar = Vec::Scalar(r, r);         // (r_k-1, r_k-1)
+         double rScalar = 0;
+         double a = 0;                       // alpha_k,
+         double b = 0;                       // beta_k
+         double normF = Vec::Scalar(f, f);   // ||f||
+         eps = sqrt(rPrevScalar / normF);
+
+         size_t iter;
+         for (iter = 1; iter <= maxIter && eps > minEps; iter++)
+         {
+            Vec::Mult(D, z, t);
+            A.MultToVec(t, tmp);
+            Vec::Mult(D, tmp, tmp);
+            Vec::Mult(D, tmp, tmp);
+            A.TranspMultToVec(tmp, t);
+            Vec::Mult(D, t, t);
+
+            a = rPrevScalar / Vec::Scalar(t, z);   // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
+            for (uint16_t i = 0; i < size; i++)
+            {
+               local_x[i] += a * z[i];                   // local_x_k = local_x_k-1 + a * z_k-1
+               r[i] -= a * t[i];                         // r_k = r_k-1 - a * t_k-1
+            }
+
+            rScalar = Vec::Scalar(r, r);
+            b = rScalar / rPrevScalar;                   // b = (r_k, r_k) / (r_k-1, r_k-1)
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               z[i] = r[i] + b * z[i];                   // z_k = r_k + b * z_k-1
+            }
+
+            rPrevScalar = rScalar;
+            eps = sqrt(rPrevScalar / normF);
+
+            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            if (debugOutput)
+            {
+               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+            }
+            if (isinf(eps))
+            {
+               break;
+            }
+         }
+         Vec::Mult(D, local_x, x);        // x = U^-1 * local_x
+
+         if (debugOutput)
+         {
+            cout << endl;
+            if (isinf(eps))
+            {
+               cout << "Выход по переполнению метода" << endl << endl;
+            }
+            else if (iter > maxIter)
+            {
+               cout << "Выход по числу итераций" << endl << endl;
+            }
+            else
+            {
+               cout << "Выход по относительной невязке" << endl << endl;
+            }
+         }
+
+         return iter;
+      }
    }
 
    namespace LOS {
       size_t resetIter = 10;
+
       size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
          vector<double> r = A * x;
          for (uint16_t i = 0; i < r.size(); i++) r[i] = f[i] - r[i]; // r0 = f - A * x
 
          vector<double> z = r;      // z0
          vector<double> p = A * z;  // p0 = A * z0
-         vector<double> Ar;         // A * r
+         vector<double> Ar(x.size());         // A * r
 
          double ppScalar;
          double nev = Vec::Scalar(r, r);
          double ffScalar = Vec::Scalar(f, f);
-         eps = DBL_MAX;
+         eps = nev / ffScalar;
          double a;                  // alpha
          double b;                  // beta
          uint16_t size = x.size();
@@ -127,8 +227,8 @@ namespace IterSolvers {
                r[i] -= a * p[i];                   // [r_k] = [r_k-1] - a*p_k-1
             }
 
-            Ar = A * r;                            // A * r_k
-            b = -Vec::Scalar(p, Ar) / ppScalar; // b = - (p_k-1, A * r_k)
+            A.MultToVec(r, Ar);      // A * r_k
+            b = -Vec::Scalar(p, Ar) / ppScalar; // b = - (p_k-1, A * r_k) / (p_k-1, p_k-1)
 
             for (uint16_t i = 0; i < size; i++)
             {
@@ -136,18 +236,14 @@ namespace IterSolvers {
                p[i] = Ar[i] + b * p[i];            // [p_k] = A * r_k + b * [p_k-1]
             }
 
-            if (iter % resetIter == 0)    //iter% resetIter == 0
+            if (iter % resetIter == 0)
             {
-               r = A * x;
+               A.MultToVec(x, r);
                for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i];
                z = r;
-               p = A * z;
-               nev = Vec::Scalar(r, r);
+               A.MultToVec(z, p);
             }
-            else
-            {
-               nev -= a * a * ppScalar;               // [(r_k, r_k)] = [(r_k-1, r_k-1)] - a * a * (p_k-1, p_k-1)
-            }
+            nev = Vec::Scalar(r, r);
             eps = sqrt(nev / ffScalar);
 
             // Выводим на то же место, что и раньше (со сдвигом каретки)
@@ -216,7 +312,7 @@ int main() {
    cout << "Все данные успешно считанны из файлов." << endl;
    cout << "Выберите метод для решения СЛАУ: " << endl;
    cout << "  1) МСГ для несимметричных матриц (без предобуславливания)" << endl;
-   //cout << "  2) МСГ для нессиметричных матриц (диагональное предобуславливание)" << endl;
+   cout << "  2) МСГ для нессиметричных матриц (диагональное предобуславливание)" << endl;
    cout << "  3) ЛОС (без предобуславливания)" << endl;
 
    int userCase;
@@ -229,6 +325,16 @@ int main() {
          Timer timer;
          double eps = 0;
          IterSolvers::MSG_Assimetric::Default(mat, f, x, eps, true);
+         timer.elapsed();
+         cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         break;
+      }
+      case 2:
+      {
+         cout << "Начало вычислений для метода МСГ для несимметричных матриц (диагональное предобуславливание)" << endl << endl;
+         Timer timer;
+         double eps = 0;
+         IterSolvers::MSG_Assimetric::DiagPrecond(mat, f, x, eps, true);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
          break;

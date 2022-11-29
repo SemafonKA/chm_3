@@ -82,13 +82,15 @@ public:
    /// Умножение матрицы на вектор
    /// </summary>
    std::vector<double> MultToVec(const std::vector<double>& right) const;
+   std::vector<double>& MultToVec(const std::vector<double>& right, std::vector<double>& result) const;
 
    std::vector<double> operator*(const std::vector<double>& right) const;
 
    /// <summary>
    /// Умножение транспонированной матрицы на вектор
    /// </summary>
-   std::vector<double> TranspMultToVec(const std::vector<double>& right);
+   std::vector<double> TranspMultToVec(const std::vector<double>& right) const;
+   std::vector<double>& TranspMultToVec(const std::vector<double>& right, std::vector<double>& result) const;
 
    Matrix& operator= (Matrix&& right) noexcept;
 
