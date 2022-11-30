@@ -45,10 +45,11 @@ namespace Vec {
 namespace IterSolvers {
    double minEps = 1e-8;
    size_t maxIter = 2000;
+   bool globalDebugOutput = false;
 
    namespace MSG_Assimetric {
 
-      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
+      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          size_t size = x.size();
 
          vector<double> r = A * x;
@@ -118,7 +119,7 @@ namespace IterSolvers {
          return iter;
       }
 
-      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
+      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          size_t size = x.size();
 
          vector<double> D(size);             // D = обратный корень от диагонали матрицы
@@ -209,9 +210,9 @@ namespace IterSolvers {
    }
 
    namespace LOS {
-      size_t resetIter = 500;
+      size_t resetIter = 10;
 
-      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
+      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          vector<double> r = A * x;
          for (uint16_t i = 0; i < r.size(); i++) r[i] = f[i] - r[i]; // r0 = f - A * x
 
@@ -290,7 +291,7 @@ namespace IterSolvers {
          return iter;
       }
 
-      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
+      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          uint16_t size = x.size();
 
          vector<double> D(size);       // обратный корень от диагонали матрицы
@@ -418,6 +419,8 @@ int main() {
       return 1;
    }
 
+   IterSolvers::globalDebugOutput = false;
+
    cout << "Все данные успешно считанны из файлов." << endl;
    cout << "Выберите метод для решения СЛАУ: " << endl;
    cout << "  1) МСГ для несимметричных матриц (без предобуславливания)" << endl;
@@ -434,7 +437,7 @@ int main() {
          cout << "Начало вычислений для метода МСГ для несимметричных матриц (без предобуславливания)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::MSG_Assimetric::Default(mat, f, x, eps, true);
+         IterSolvers::MSG_Assimetric::Default(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
          break;
@@ -444,7 +447,7 @@ int main() {
          cout << "Начало вычислений для метода МСГ для несимметричных матриц (диагональное предобуславливание)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::MSG_Assimetric::DiagPrecond(mat, f, x, eps, true);
+         IterSolvers::MSG_Assimetric::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
          break;
@@ -454,7 +457,7 @@ int main() {
          cout << "Начало вычислений для метода ЛОС (без предобуславливания)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::LOS::Default(mat, f, x, eps, true);
+         IterSolvers::LOS::Default(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
          break;
@@ -464,7 +467,7 @@ int main() {
          cout << "Начало вычислений для метода ЛОС (диагональное предобуславливание)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::LOS::DiagPrecond(mat, f, x, eps, true);
+         IterSolvers::LOS::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
          break;
@@ -473,17 +476,24 @@ int main() {
          break;
    }
 
-   cout << "Полученное решение: " << endl;
+
+   if (IterSolvers::globalDebugOutput)
+   {
+      cout << "Полученное решение: " << endl;
+      cout.precision(15);
+      cout.setf(std::ios_base::fixed);
+   }
 
    auto outFile = ofstream("./iofiles/resultX.txt");
    outFile.precision(15);
    outFile.setf(std::ios_base::fixed);
-   cout.precision(15);
-   cout.setf(std::ios_base::fixed);
    for (auto& el : x)
    {
       outFile << el << endl;
-      cout << el << endl;
+      if (IterSolvers::globalDebugOutput)
+      {
+         cout << el << endl;
+      }
    }
    outFile.close();
 

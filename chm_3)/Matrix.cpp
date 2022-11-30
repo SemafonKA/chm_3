@@ -177,12 +177,17 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
       {
          auto jgS = ifstream(jgP);
          if (!jgS.is_open()) throw runtime_error("Файл " + jgP + " отсутствует в директории.");
-         uint16_t var;
-         while (!jgS.eof())
+         mat.jg.resize(mat.ig.back());
+         for (uint32_t i = 0; i < mat.jg.size(); i++)
          {
-            jgS >> var;
-            mat.jg.push_back(var);
+            jgS >> mat.jg[i];
          }
+         //uint16_t var;
+         //while (!jgS.eof())
+         //{
+         //   jgS >> var;
+         //   mat.jg.push_back(var);
+         //}
       }
       try
       {
