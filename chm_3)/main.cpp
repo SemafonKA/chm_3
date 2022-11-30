@@ -30,6 +30,16 @@ namespace Vec {
          ans[i] = l[i] * r[i];
       }
    }
+   inline vector<double> Mult(const vector<double>& l, const vector<double>& r) {
+      if (r.size() != l.size()) throw runtime_error("Ошибка: размеры векторов должны совпадать.");
+      vector<double> ans(l.size());
+
+      for (size_t i = 0; i < ans.size(); i++)
+      {
+         ans[i] = l[i] * r[i];
+      }
+      return ans;
+   }
 }
 
 namespace IterSolvers {
@@ -37,20 +47,22 @@ namespace IterSolvers {
    size_t maxIter = 2000;
 
    namespace MSG_Assimetric {
+
       size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
+         size_t size = x.size();
+
          vector<double> r = A * x;
-         for (uint16_t i = 0; i < r.size(); i++) r[i] = f[i] - r[i]; // r0 = f - A * x
+         for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i]; // r0 = f - A * x
          r = A.TranspMultToVec(r);                             // r0 = A^t * (f - A * x)
 
          vector<double> z = r;               // z0
-         vector<double> t(x.size());
+         vector<double> t(size);
 
          double rPrevScalar = Vec::Scalar(r, r);         // (r_k-1, r_k-1)
          double rScalar = 0;
          double a = 0;                       // alpha_k,
          double b = 0;                       // beta_k
          double normF = Vec::Scalar(f, f);   // ||f||
-         size_t size = x.size();
          eps = DBL_MAX;
 
          size_t iter;
@@ -109,7 +121,7 @@ namespace IterSolvers {
       size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
          size_t size = x.size();
 
-         vector<double> D(size);             // D = inverted sqrt of diag A
+         vector<double> D(size);             // D = обратный корень от диагонали матрицы
          for (uint16_t i = 0; i < size; i++) D[i] = sqrt(A.di[i]);
 
          vector<double> local_x(size);
@@ -122,7 +134,7 @@ namespace IterSolvers {
          Vec::Mult(D, tmp, tmp);
          Vec::Mult(D, tmp, tmp);
          A.TranspMultToVec(tmp, r);
-         Vec::Mult(D, r, r);                
+         Vec::Mult(D, r, r);
 
          vector<double> z = r;
 
@@ -197,7 +209,7 @@ namespace IterSolvers {
    }
 
    namespace LOS {
-      size_t resetIter = 10;
+      size_t resetIter = 500;
 
       size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
          vector<double> r = A * x;
@@ -277,6 +289,103 @@ namespace IterSolvers {
 
          return iter;
       }
+
+      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = false) {
+         uint16_t size = x.size();
+
+         vector<double> D(size);       // обратный корень от диагонали матрицы
+         for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
+
+         vector<double> r = A * x;     // r0 = L^-1 * (f - A * x)
+         for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i];
+         Vec::Mult(D, r, r);
+
+         vector<double> z = Vec::Mult(D, r);      // z0 = U^-1 * r
+
+         vector<double> p = A * z;     // p0 = L^-1 * A * z0
+         Vec::Mult(D, p, p);
+
+         vector<double> Ar(size);      // Ar = L^-1 * A * U^-1 * r
+         vector<double> tmp(size);
+
+         double ppScalar;
+         double nev = Vec::Scalar(r, r);
+         double ffScalar = Vec::Scalar(f, f);
+         eps = nev / ffScalar;
+         double a;                  // alpha
+         double b;                  // beta
+         size_t iter;
+
+         for (iter = 1; iter <= maxIter && eps > minEps; iter++)
+         {
+            ppScalar = Vec::Scalar(p, p);          // (p_k-1, p_k-1)
+            a = Vec::Scalar(p, r) / ppScalar;      // (p_k-1, r_k-1) / (p_k-1, p_k-1)
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               x[i] += a * z[i];                   // [x_k] = [x_k-1] + a*z_k-1
+               r[i] -= a * p[i];                   // [r_k] = [r_k-1] - a*p_k-1
+            }
+
+            Vec::Mult(D, r, tmp);
+            A.MultToVec(tmp, Ar);
+            Vec::Mult(D, Ar, Ar);                  // Ar = L^-1 * A * U^-1 * r
+
+            b = -Vec::Scalar(p, Ar) / ppScalar;    // b = - (p_k-1, L^-1 * A * U^-1 * r_k) / (p_k-1, p_k-1)
+            Vec::Mult(D, r, tmp);                  // tmp = U^-1 * r_k
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               z[i] = tmp[i] + b * z[i];            // [z_k] = U^-1 * r_k + b * [z_k-1]
+               p[i] = Ar[i] + b * p[i];             // [p_k] = A * r_k + b * [p_k-1]
+            }
+
+            if (iter % resetIter == 0)
+            {
+               vector<double> r = A * x;           // r0 = L^-1 * (f - A * x)
+               for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i];
+               Vec::Mult(D, r, r);
+
+               vector<double> z = Vec::Mult(D, r); // z0 = U^-1 * r
+
+               vector<double> p = A * z;           // p0 = L^-1 * A * z0
+               Vec::Mult(D, p, p);
+            }
+            nev = Vec::Scalar(r, r);
+            eps = sqrt(nev / ffScalar);
+
+            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            if (debugOutput)
+            {
+               //cout << format("Итерация: {0:<10} относительная невязка: {1:<15.3e}\n", iter, eps);
+               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+            }
+            if (isinf(eps))
+            {
+               break;
+            }
+         }
+
+         if (debugOutput)
+         {
+            cout << endl;
+            if (isinf(eps))
+            {
+               cout << "Выход по переполнению метода" << endl << endl;
+            }
+            else if (iter > maxIter)
+            {
+               cout << "Выход по числу итераций" << endl << endl;
+            }
+            else
+            {
+               cout << "Выход по относительной невязке" << endl << endl;
+            }
+         }
+
+         return iter;
+      }
+
    }
 };
 
@@ -314,6 +423,7 @@ int main() {
    cout << "  1) МСГ для несимметричных матриц (без предобуславливания)" << endl;
    cout << "  2) МСГ для нессиметричных матриц (диагональное предобуславливание)" << endl;
    cout << "  3) ЛОС (без предобуславливания)" << endl;
+   cout << "  4) ЛОС (диагональное предобуславливание)" << endl;
 
    int userCase;
    cin >> userCase;
@@ -345,6 +455,16 @@ int main() {
          Timer timer;
          double eps = 0;
          IterSolvers::LOS::Default(mat, f, x, eps, true);
+         timer.elapsed();
+         cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         break;
+      }
+      case 4:
+      {
+         cout << "Начало вычислений для метода ЛОС (диагональное предобуславливание)" << endl << endl;
+         Timer timer;
+         double eps = 0;
+         IterSolvers::LOS::DiagPrecond(mat, f, x, eps, true);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
          break;
