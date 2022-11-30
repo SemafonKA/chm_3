@@ -116,7 +116,7 @@ namespace IterSolvers {
             }
          }
 
-         return iter;
+         return iter - 1;
       }
 
       size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
@@ -205,7 +205,7 @@ namespace IterSolvers {
             }
          }
 
-         return iter;
+         return iter - 1;
       }
    }
 
@@ -288,7 +288,7 @@ namespace IterSolvers {
             }
          }
 
-         return iter;
+         return iter - 1;
       }
 
       size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
@@ -384,7 +384,7 @@ namespace IterSolvers {
             }
          }
 
-         return iter;
+         return iter - 1;
       }
 
    }
@@ -437,9 +437,11 @@ int main() {
          cout << "Начало вычислений для метода МСГ для несимметричных матриц (без предобуславливания)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::MSG_Assimetric::Default(mat, f, x, eps);
+         size_t it = IterSolvers::MSG_Assimetric::Default(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         cout << "Количество итераций: " << it << endl;
+         cout << "Относительная невязка: " << eps << endl;
          break;
       }
       case 2:
@@ -447,9 +449,11 @@ int main() {
          cout << "Начало вычислений для метода МСГ для несимметричных матриц (диагональное предобуславливание)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::MSG_Assimetric::DiagPrecond(mat, f, x, eps);
+         size_t it = IterSolvers::MSG_Assimetric::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         cout << "Количество итераций: " << it << endl;
+         cout << "Относительная невязка: " << eps << endl;
          break;
       }
       case 3:
@@ -457,9 +461,11 @@ int main() {
          cout << "Начало вычислений для метода ЛОС (без предобуславливания)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::LOS::Default(mat, f, x, eps);
+         size_t it = IterSolvers::LOS::Default(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         cout << "Количество итераций: " << it << endl;
+         cout << "Относительная невязка: " << eps << endl;
          break;
       }
       case 4:
@@ -467,9 +473,11 @@ int main() {
          cout << "Начало вычислений для метода ЛОС (диагональное предобуславливание)" << endl << endl;
          Timer timer;
          double eps = 0;
-         IterSolvers::LOS::DiagPrecond(mat, f, x, eps);
+         size_t it = IterSolvers::LOS::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         cout << "Количество итераций: " << it << endl;
+         cout << "Относительная невязка: " << eps << endl;
          break;
       }
       default:
