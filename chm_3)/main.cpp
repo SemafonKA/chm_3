@@ -47,17 +47,42 @@ namespace IterSolvers {
    size_t maxIter = 2000;
    bool globalDebugOutput = false;
 
-   namespace MSG_Assimetric {
+   vector<double>* _tmp1 = nullptr, * _tmp2 = nullptr, 
+      * _tmp3 = nullptr, * _tmp4 = nullptr, * _tmp5 = nullptr;
 
+   static void VecInit(vector<double>*& vec, size_t size) {
+      if (vec == nullptr)
+      {
+         vec = new vector<double>(size);
+      }
+      else if (vec->size() != size)
+      {
+         vec->resize(size);
+      }
+   }
+
+   namespace MSG_Assimetric {
+      void Init_Default(size_t size) {
+         VecInit(_tmp1, size); // ћассив дл€ вектора r метода
+         VecInit(_tmp2, size); // ћассив дл€ вектора z
+         VecInit(_tmp3, size); // ћассив дл€ вектора t
+         VecInit(_tmp4, size); // ћассив дл€ временного вектора
+      }
+      
       size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          size_t size = x.size();
+         Init_Default(size);        // Ќа вс€кий случай делаем инициализацию, если еЄ не сделали предварительно. 
+                                    // ≈сли она уже была, ничего не изменитс€
 
-         vector<double> r = A * x;
-         for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i]; // r0 = f - A * x
-         r = A.TranspMultToVec(r);                             // r0 = A^t * (f - A * x)
+         vector<double>& r = *_tmp1;
+         vector<double>& tmp = *_tmp4;
+         A.MultToVec(x, tmp);
+         for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i]; // r0 = f - A * x
+         A.TranspMultToVec(tmp, r);                                  // r0 = A^t * (f - A * x)
 
-         vector<double> z = r;               // z0
-         vector<double> t(size);
+         vector<double>& z = *_tmp2;
+         z = r;                        // z0
+         vector<double>& t = *_tmp3;
 
          double rPrevScalar = Vec::Scalar(r, r);         // (r_k-1, r_k-1)
          double rScalar = 0;
@@ -69,7 +94,8 @@ namespace IterSolvers {
          size_t iter;
          for (iter = 1; iter <= maxIter && eps > minEps; iter++)
          {
-            A.TranspMultToVec(A * z, t);          // t = A^t * A * z_k-1
+            A.MultToVec(z, tmp);
+            A.TranspMultToVec(tmp, t);             // t = A^t * A * z_k-1
             a = rPrevScalar / Vec::Scalar(t, z);   // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
 
             for (uint16_t i = 0; i < size; i++)
@@ -118,27 +144,34 @@ namespace IterSolvers {
 
          return iter - 1;
       }
+      
+      void Init_DiagPrecond(size_t size) {
+         Init_Default(size);
+         VecInit(_tmp5, size);      // ћассив дл€ вектора D
+      }
 
       size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          size_t size = x.size();
+         Init_DiagPrecond(size);
 
-         vector<double> D(size);             // D = обратный корень от диагонали матрицы
+         vector<double>& D = *_tmp5;         // D = обратный корень от диагонали матрицы
          for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
 
-         vector<double> local_x(size);
-         for (uint16_t i = 0; i < size; i++) local_x[i] = x[i] / D[i];
+         for (uint16_t i = 0; i < size; i++) x[i] /= D[i];     // local_x
 
-         vector<double> r(size);             // r = U^-t * A^t * L^-t * L^-1 (f - A * x)
-         vector<double> tmp = A * x;
+         vector<double>& r = *_tmp1;             // r = U^-t * A^t * L^-t * L^-1 (f - A * x)
+         vector<double>& tmp = *_tmp4 ; 
+         A.MultToVec(x, tmp);
          for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i];
          Vec::Mult(D, tmp, tmp);
          Vec::Mult(D, tmp, tmp);
          A.TranspMultToVec(tmp, r);
          Vec::Mult(D, r, r);
 
-         vector<double> z = r;
+         vector<double>& z = *_tmp2; 
+         z = r;
 
-         vector<double> t(size);             // t = U^-1 * A^t * L^-t * L^-1 * A * U^-1 * z
+         vector<double>& t = *_tmp3;             // t = U^-1 * A^t * L^-t * L^-1 * A * U^-1 * z
 
          double rPrevScalar = Vec::Scalar(r, r);         // (r_k-1, r_k-1)
          double rScalar = 0;
@@ -160,7 +193,7 @@ namespace IterSolvers {
             a = rPrevScalar / Vec::Scalar(t, z);         // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
             for (uint16_t i = 0; i < size; i++)
             {
-               local_x[i] += a * z[i];                   // local_x_k = local_x_k-1 + a * z_k-1
+               x[i] += a * z[i];                         // local_x_k = local_x_k-1 + a * z_k-1
                r[i] -= a * t[i];                         // r_k = r_k-1 - a * t_k-1
             }
 
@@ -185,7 +218,7 @@ namespace IterSolvers {
                break;
             }
          }
-         Vec::Mult(D, local_x, x);        // x = U^-1 * local_x
+         Vec::Mult(D, x, x);        // x = U^-1 * local_x
 
          if (debugOutput)
          {
