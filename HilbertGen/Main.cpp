@@ -62,7 +62,7 @@ void matrixPrint(matrix& mat) {
    FILE_OPEN(igFile, igFilePath);
    FILE_OPEN(jgFile, jgFilePath);
 
-   igFile << 0 << " " << 0;
+   igFile << "0 ";
    size_t allCount = 0;
    for (size_t i = 0; i < mat.size(); i++)
    {

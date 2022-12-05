@@ -5,6 +5,7 @@
 
 #include "Chrono_Timer.h"
 #include "Matrix.h"
+#include "LU.h"
 
 using namespace std;
 
@@ -458,6 +459,9 @@ int main() {
    vector<double> f;
    vector<double> x;
 
+   cout << "*** Программа для вычисления СЛАУ трёхшаговыми методами ***" << endl;
+   cout << "Начинается считывание данных из файла..." << endl;
+
    auto kuslauF = ifstream("./iofiles/kuslau.txt");
    if (!kuslauF.is_open())
    {
@@ -481,7 +485,7 @@ int main() {
 
    IterSolvers::globalDebugOutput = false;
 
-   cout << "Все данные успешно считанны из файлов." << endl;
+   cout << "Все данные успешно считанны из файлов." << endl << endl;
    cout << "Выберите метод для решения СЛАУ: " << endl;
    cout << "  1) МСГ для несимметричных матриц (без предобуславливания)" << endl;
    cout << "  2) МСГ для нессиметричных матриц (диагональное предобуславливание)" << endl;
@@ -495,8 +499,9 @@ int main() {
       case 1:
       {
          cout << "Начало вычислений для метода МСГ для несимметричных матриц (без предобуславливания)" << endl << endl;
-         Timer timer;
          double eps = 0;
+         IterSolvers::MSG_Assimetric::Init_Default(mat.Size());
+         Timer timer;
          size_t it = IterSolvers::MSG_Assimetric::Default(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
@@ -509,6 +514,7 @@ int main() {
          cout << "Начало вычислений для метода МСГ для несимметричных матриц (диагональное предобуславливание)" << endl << endl;
          Timer timer;
          double eps = 0;
+         IterSolvers::MSG_Assimetric::Init_DiagPrecond(mat.Size());
          size_t it = IterSolvers::MSG_Assimetric::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
@@ -521,6 +527,7 @@ int main() {
          cout << "Начало вычислений для метода ЛОС (без предобуславливания)" << endl << endl;
          Timer timer;
          double eps = 0;
+         IterSolvers::LOS::Init_Default(mat.Size());
          size_t it = IterSolvers::LOS::Default(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
@@ -533,6 +540,7 @@ int main() {
          cout << "Начало вычислений для метода ЛОС (диагональное предобуславливание)" << endl << endl;
          Timer timer;
          double eps = 0;
+         IterSolvers::LOS::Init_DiagPrecond(mat.Size());
          size_t it = IterSolvers::LOS::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
