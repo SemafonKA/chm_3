@@ -123,11 +123,10 @@ namespace IterSolvers {
          size_t size = x.size();
 
          vector<double> D(size);             // D = обратный корень от диагонали матрицы
-         for (uint16_t i = 0; i < size; i++) D[i] = sqrt(A.di[i]);
+         for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
 
          vector<double> local_x(size);
-         Vec::Mult(D, x, local_x);
-         for (uint16_t i = 0; i < size; i++) D[i] = 1 / D[i];
+         for (uint16_t i = 0; i < size; i++) local_x[i] = x[i] / D[i];
 
          vector<double> r(size);             // r = U^-t * A^t * L^-t * L^-1 (f - A * x)
          vector<double> tmp = A * x;
@@ -158,7 +157,7 @@ namespace IterSolvers {
             A.TranspMultToVec(tmp, t);
             Vec::Mult(D, t, t);
 
-            a = rPrevScalar / Vec::Scalar(t, z);   // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
+            a = rPrevScalar / Vec::Scalar(t, z);         // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
             for (uint16_t i = 0; i < size; i++)
             {
                local_x[i] += a * z[i];                   // local_x_k = local_x_k-1 + a * z_k-1

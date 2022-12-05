@@ -155,7 +155,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 // Статические методы матрицы
    Matrix Matrix::ReadFromFiles(uint16_t matrixSize, const string& igP, const string& jgP, const string& gglP, const string& gguP, const string& diP) {
       Matrix mat;
-
+      bool isStartFromOne = false;
       {
          mat.ig.resize(matrixSize + 1);
          auto igS = ifstream(igP);
@@ -165,7 +165,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
             igS >> mat.ig[i];
          }
          // Если массив ig в файле начинался с 1, то меняем его под наши параметры (под 0)
-         if (mat.ig[0] == 1)
+         if (isStartFromOne = mat.ig[0])
          {
             for (uint16_t i = 0; i <= matrixSize; i++)
             {
@@ -181,13 +181,11 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
          for (uint32_t i = 0; i < mat.jg.size(); i++)
          {
             jgS >> mat.jg[i];
+            if (isStartFromOne)
+            {
+               mat.jg[i]--;
+            }
          }
-         //uint16_t var;
-         //while (!jgS.eof())
-         //{
-         //   jgS >> var;
-         //   mat.jg.push_back(var);
-         //}
       }
       try
       {
