@@ -47,10 +47,10 @@ namespace IterSolvers {
    size_t maxIter = 2000;
    bool globalDebugOutput = false;
 
-   vector<double>* _tmp1 = nullptr, * _tmp2 = nullptr, 
-      * _tmp3 = nullptr, * _tmp4 = nullptr, * _tmp5 = nullptr;
+   vector<double>* _tmp1 = nullptr, * _tmp2 = nullptr,
+      * _tmp3 = nullptr, * _tmp4 = nullptr, * _tmp5 = nullptr, * _tmp6 = nullptr;
 
-   static void VecInit(vector<double>*& vec, size_t size) {
+   inline void VecInit(vector<double>*& vec, size_t size) {
       if (vec == nullptr)
       {
          vec = new vector<double>(size);
@@ -62,17 +62,16 @@ namespace IterSolvers {
    }
 
    namespace MSG_Assimetric {
-      void Init_Default(size_t size) {
+      inline void Init_Default(size_t size) {
          VecInit(_tmp1, size); // Массив для вектора r метода
          VecInit(_tmp2, size); // Массив для вектора z
          VecInit(_tmp3, size); // Массив для вектора t
          VecInit(_tmp4, size); // Массив для временного вектора
       }
-      
+
       size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          size_t size = x.size();
-         Init_Default(size);        // На всякий случай делаем инициализацию, если её не сделали предварительно. 
-                                    // Если она уже была, ничего не изменится
+         Init_Default(size);
 
          vector<double>& r = *_tmp1;
          vector<double>& tmp = *_tmp4;
@@ -144,8 +143,8 @@ namespace IterSolvers {
 
          return iter - 1;
       }
-      
-      void Init_DiagPrecond(size_t size) {
+
+      inline void Init_DiagPrecond(size_t size) {
          Init_Default(size);
          VecInit(_tmp5, size);      // Массив для вектора D
       }
@@ -160,7 +159,7 @@ namespace IterSolvers {
          for (uint16_t i = 0; i < size; i++) x[i] /= D[i];     // local_x
 
          vector<double>& r = *_tmp1;             // r = U^-t * A^t * L^-t * L^-1 (f - A * x)
-         vector<double>& tmp = *_tmp4 ; 
+         vector<double>& tmp = *_tmp4;
          A.MultToVec(x, tmp);
          for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i];
          Vec::Mult(D, tmp, tmp);
@@ -168,7 +167,7 @@ namespace IterSolvers {
          A.TranspMultToVec(tmp, r);
          Vec::Mult(D, r, r);
 
-         vector<double>& z = *_tmp2; 
+         vector<double>& z = *_tmp2;
          z = r;
 
          vector<double>& t = *_tmp3;             // t = U^-1 * A^t * L^-t * L^-1 * A * U^-1 * z
@@ -244,13 +243,26 @@ namespace IterSolvers {
    namespace LOS {
       size_t resetIter = 10;
 
-      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
-         vector<double> r = A * x;
-         for (uint16_t i = 0; i < r.size(); i++) r[i] = f[i] - r[i]; // r0 = f - A * x
+      void Init_Default(size_t size) {
+         VecInit(_tmp1, size); // Массив для вектора r метода
+         VecInit(_tmp2, size); // Массив для вектора z
+         VecInit(_tmp3, size); // Массив для вектора p
+         VecInit(_tmp4, size); // Массив для вектора Ar
+      }
 
-         vector<double> z = r;      // z0
-         vector<double> p = A * z;  // p0 = A * z0
-         vector<double> Ar(x.size());         // A * r
+      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
+         uint16_t size = x.size();
+         Init_Default(size);
+
+         vector<double>& r = *_tmp1;
+         A.MultToVec(x, r);
+         for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i]; // r0 = f - A * x
+
+         vector<double>& z = *_tmp2;         // z0
+         z = r;
+         vector<double>& p = *_tmp3;         // p0 = A * z0
+         A.MultToVec(z, p);
+         vector<double>& Ar = *_tmp4;        // A * r
 
          double ppScalar;
          double nev = Vec::Scalar(r, r);
@@ -258,7 +270,6 @@ namespace IterSolvers {
          eps = nev / ffScalar;
          double a;                  // alpha
          double b;                  // beta
-         uint16_t size = x.size();
          size_t iter;
 
          for (iter = 1; iter <= maxIter && eps > minEps; iter++)
@@ -323,23 +334,36 @@ namespace IterSolvers {
          return iter - 1;
       }
 
+      void Init_DiagPrecond(size_t size) {
+         VecInit(_tmp1, size); // Массив для вектора r метода
+         VecInit(_tmp2, size); // Массив для вектора z
+         VecInit(_tmp3, size); // Массив для вектора p
+         VecInit(_tmp4, size); // Массив для вектора Ar
+         VecInit(_tmp5, size); // Массив для вектора D
+         VecInit(_tmp6, size); // Массив для вектора tmp
+      }
+
       size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
          uint16_t size = x.size();
+         Init_DiagPrecond(size);
 
-         vector<double> D(size);       // обратный корень от диагонали матрицы
+         vector<double>& D = *_tmp5;               // обратный корень от диагонали матрицы
          for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
 
-         vector<double> r = A * x;     // r0 = L^-1 * (f - A * x)
+         vector<double>& r = *_tmp1;               // r0 = L^-1 * (f - A * x)
+         A.MultToVec(x, r);
          for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i];
          Vec::Mult(D, r, r);
 
-         vector<double> z = Vec::Mult(D, r);      // z0 = U^-1 * r
+         vector<double>& z = *_tmp2;               // z0 = U^-1 * r
+         Vec::Mult(D, r, z);
 
-         vector<double> p = A * z;     // p0 = L^-1 * A * z0
+         vector<double>& p = *_tmp3;               // p0 = L^-1 * A * z0
+         A.MultToVec(z, p);
          Vec::Mult(D, p, p);
 
-         vector<double> Ar(size);      // Ar = L^-1 * A * U^-1 * r
-         vector<double> tmp(size);
+         vector<double>& Ar = *_tmp4;              // Ar = L^-1 * A * U^-1 * r
+         vector<double>& tmp = *_tmp6;
 
          double ppScalar;
          double nev = Vec::Scalar(r, r);
@@ -418,7 +442,11 @@ namespace IterSolvers {
 
          return iter - 1;
       }
+   }
 
+   void Destruct() {
+      delete _tmp1, _tmp2, _tmp3, _tmp4, _tmp5, _tmp6;
+      _tmp1 = _tmp2 = _tmp3 = _tmp4 = _tmp5 = _tmp6 = nullptr;
    }
 };
 
@@ -515,7 +543,7 @@ int main() {
       default:
          break;
    }
-
+   IterSolvers::Destruct();
 
    if (IterSolvers::globalDebugOutput)
    {
