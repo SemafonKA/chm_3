@@ -50,6 +50,7 @@ namespace IterSolvers {
 
    vector<double>* _tmp1 = nullptr, * _tmp2 = nullptr,
       * _tmp3 = nullptr, * _tmp4 = nullptr, * _tmp5 = nullptr, * _tmp6 = nullptr;
+   LU* _lu_mat = nullptr;
 
    inline void VecInit(vector<double>*& vec, size_t size) {
       if (vec == nullptr)
@@ -145,9 +146,10 @@ namespace IterSolvers {
          return iter - 1;
       }
 
+
       inline void Init_DiagPrecond(size_t size) {
          Init_Default(size);
-         VecInit(_tmp5, size);      // Массив для вектора D
+         VecInit(_tmp5, size); // Массив для вектора D
       }
 
       size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
@@ -239,12 +241,122 @@ namespace IterSolvers {
 
          return iter - 1;
       }
+
+
+      inline void Init_LuPrecond(size_t diSize, size_t luSize) {
+         VecInit(_tmp1, diSize); // Массив для вектора r метода
+         VecInit(_tmp2, diSize); // Массив для вектора z
+         VecInit(_tmp3, diSize); // Массив для вектора t
+         VecInit(_tmp4, diSize); // Массив для временного вектора
+         VecInit(_tmp5, diSize); // Массив для вектора local_x
+
+         if (_lu_mat == nullptr)
+         {
+            _lu_mat = new LU(diSize, luSize);
+         }
+         else if (_lu_mat->ggl.size() != luSize || _lu_mat->di.size() != diSize)
+         {
+            _lu_mat->Resize(diSize, luSize);
+         }
+      }
+
+      size_t LuPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
+         size_t size = x.size();
+         Init_LuPrecond(size, A.ggl.size());
+
+         LU& lu = *_lu_mat;
+         lu.MakeLuFor(A);                          // неполное LU(sq) разложение для матрицы A
+
+         vector<double>& local_x = *_tmp5;         // local_x
+         lu.UMultToVec(x, local_x);
+
+         vector<double>& r = *_tmp1;               // r = U^-t * A^t * L^-t * L^-1 (f - A * x)
+         vector<double>& tmp = *_tmp4;
+         A.MultToVec(x, r);
+         for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i];
+         lu.LSlauSolve(r, tmp);
+         lu.LTranspSlauSolve(tmp, r);
+         A.TranspMultToVec(r, tmp);
+         lu.UTranspSlauSolve(tmp, r);
+
+         vector<double>& z = *_tmp2;
+         z = r;
+
+         vector<double>& t = *_tmp3;               // t = U^-1 * A^t * L^-t * L^-1 * A * U^-1 * z
+
+         double rPrevScalar = Vec::Scalar(r, r);   // (r_k-1, r_k-1)
+         double rScalar = 0;
+         double a = 0;                             // alpha_k,
+         double b = 0;                             // beta_k
+         double normF = Vec::Scalar(f, f);         // ||f||
+         eps = sqrt(rPrevScalar / normF);
+
+         size_t iter;
+         for (iter = 1; iter <= maxIter && eps > minEps; iter++)
+         {
+            lu.USlauSolve(z, tmp);
+            A.MultToVec(tmp, t);
+            lu.LSlauSolve(t, tmp);
+            lu.LTranspSlauSolve(tmp, t);
+            A.TranspMultToVec(t, tmp);
+            lu.UTranspSlauSolve(tmp, t);
+
+            a = rPrevScalar / Vec::Scalar(t, z);         // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
+            for (uint16_t i = 0; i < size; i++)
+            {
+               local_x[i] += a * z[i];                   // local_x_k = local_x_k-1 + a * z_k-1
+               r[i] -= a * t[i];                         // r_k = r_k-1 - a * t_k-1
+            }
+
+            rScalar = Vec::Scalar(r, r);
+            b = rScalar / rPrevScalar;                   // b = (r_k, r_k) / (r_k-1, r_k-1)
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               z[i] = r[i] + b * z[i];                   // z_k = r_k + b * z_k-1
+            }
+
+            rPrevScalar = rScalar;
+            eps = sqrt(rPrevScalar / normF);
+
+            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            if (debugOutput)
+            {
+               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+            }
+            if (isinf(eps))
+            {
+               break;
+            }
+         }
+         lu.USlauSolve(local_x, x); // x = U^-1 * local_x
+
+         if (debugOutput)
+         {
+            cout << endl;
+            if (isinf(eps))
+            {
+               cout << "Выход по переполнению метода" << endl << endl;
+            }
+            else if (iter > maxIter)
+            {
+               cout << "Выход по числу итераций" << endl << endl;
+            }
+            else
+            {
+               cout << "Выход по относительной невязке" << endl << endl;
+            }
+         }
+
+         return iter - 1;
+      }
    }
 
    namespace LOS {
-      size_t resetIter = 10;
+      size_t resetIter = 100000;
 
-      void Init_Default(size_t size) {
+
+      inline void Init_Default(size_t size) {
          VecInit(_tmp1, size); // Массив для вектора r метода
          VecInit(_tmp2, size); // Массив для вектора z
          VecInit(_tmp3, size); // Массив для вектора p
@@ -335,7 +447,8 @@ namespace IterSolvers {
          return iter - 1;
       }
 
-      void Init_DiagPrecond(size_t size) {
+
+      inline void Init_DiagPrecond(size_t size) {
          VecInit(_tmp1, size); // Массив для вектора r метода
          VecInit(_tmp2, size); // Массив для вектора z
          VecInit(_tmp3, size); // Массив для вектора p
@@ -400,14 +513,138 @@ namespace IterSolvers {
 
             if (iter % resetIter == 0)
             {
-               vector<double> r = A * x;           // r0 = L^-1 * (f - A * x)
+               A.MultToVec(x, r);
                for (uint16_t i = 0; i < size; i++) r[i] = f[i] - r[i];
                Vec::Mult(D, r, r);
 
-               vector<double> z = Vec::Mult(D, r); // z0 = U^-1 * r
+               Vec::Mult(D, r, z);
 
-               vector<double> p = A * z;           // p0 = L^-1 * A * z0
+               A.MultToVec(z, p);
                Vec::Mult(D, p, p);
+            }
+            nev = Vec::Scalar(r, r);
+            eps = sqrt(nev / ffScalar);
+
+            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            if (debugOutput)
+            {
+               //cout << format("Итерация: {0:<10} относительная невязка: {1:<15.3e}\n", iter, eps);
+               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+            }
+            if (isinf(eps))
+            {
+               break;
+            }
+         }
+
+         if (debugOutput)
+         {
+            cout << endl;
+            if (isinf(eps))
+            {
+               cout << "Выход по переполнению метода" << endl << endl;
+            }
+            else if (iter > maxIter)
+            {
+               cout << "Выход по числу итераций" << endl << endl;
+            }
+            else
+            {
+               cout << "Выход по относительной невязке" << endl << endl;
+            }
+         }
+
+         return iter - 1;
+      }
+
+
+      inline void Init_LuPrecond(size_t diSize, size_t luSize) {
+         VecInit(_tmp1, diSize); // Массив для вектора r метода
+         VecInit(_tmp2, diSize); // Массив для вектора z
+         VecInit(_tmp3, diSize); // Массив для вектора p
+         VecInit(_tmp4, diSize); // Массив для вектора Ar
+         VecInit(_tmp5, diSize); // Массив для вектора tmp
+         //VecInit(_tmp6, diSize); // Массив для вектора D
+
+         if (_lu_mat == nullptr)
+         {
+            _lu_mat = new LU(diSize, luSize);
+         }
+         else if (_lu_mat->ggl.size() != luSize || _lu_mat->di.size() != diSize)
+         {
+            _lu_mat->Resize(diSize, luSize);
+         }
+      }
+
+      size_t LuPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput = globalDebugOutput) {
+         uint16_t size = x.size();
+         Init_LuPrecond(size, A.ggl.size());
+
+         LU& lu = *_lu_mat;
+         lu.MakeLuFor(A);
+         //vector<double>& D = *_tmp5;               // обратный корень от диагонали матрицы
+         //for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
+
+         vector<double>& tmp = *_tmp5;
+         vector<double>& r = *_tmp1;               // r0 = L^-1 * (f - A * x)
+         A.MultToVec(x, tmp);
+         for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i];
+         lu.LSlauSolve(tmp, r);
+
+         vector<double>& z = *_tmp2;               // z0 = U^-1 * r
+         lu.USlauSolve(r, z);
+
+         vector<double>& p = *_tmp3;               // p0 = L^-1 * A * z0
+         A.MultToVec(z, tmp);
+         lu.LSlauSolve(tmp, p);
+
+         vector<double>& Ar = *_tmp4;              // Ar = L^-1 * A * U^-1 * r
+
+         double ppScalar;
+         double nev = Vec::Scalar(r, r);
+         double ffScalar = Vec::Scalar(f, f);
+         eps = nev / ffScalar;
+         double a;                  // alpha
+         double b;                  // beta
+         size_t iter;
+
+         for (iter = 1; iter <= maxIter && eps > minEps; iter++)
+         {
+            ppScalar = Vec::Scalar(p, p);          // (p_k-1, p_k-1)
+            a = Vec::Scalar(p, r) / ppScalar;      // (p_k-1, r_k-1) / (p_k-1, p_k-1)
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               x[i] += a * z[i];                   // [x_k] = [x_k-1] + a*z_k-1
+               r[i] -= a * p[i];                   // [r_k] = [r_k-1] - a*p_k-1
+            }
+
+            lu.USlauSolve(r, Ar);
+            A.MultToVec(Ar, tmp);
+            lu.LSlauSolve(tmp, Ar);                // Ar = L^-1 * A * U^-1 * r
+            //Vec::Mult(D, r, tmp);
+            //A.MultToVec(tmp, Ar);
+            //Vec::Mult(D, Ar, Ar);                  
+
+            b = -Vec::Scalar(p, Ar) / ppScalar;    // b = - (p_k-1, L^-1 * A * U^-1 * r_k) / (p_k-1, p_k-1)
+            lu.USlauSolve(r, tmp);                 // tmp = U^-1 * r_k
+
+            for (uint16_t i = 0; i < size; i++)
+            {
+               z[i] = tmp[i] + b * z[i];            // [z_k] = U^-1 * r_k + b * [z_k-1]
+               p[i] = Ar[i] + b * p[i];             // [p_k] = A * r_k + b * [p_k-1]
+            }
+
+            if (iter % resetIter == 0)
+            {
+               A.MultToVec(x, tmp);
+               for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i];
+               lu.LSlauSolve(tmp, r);
+
+               lu.USlauSolve(r, z);
+
+               A.MultToVec(z, tmp);
+               lu.LSlauSolve(tmp, p);
             }
             nev = Vec::Scalar(r, r);
             eps = sqrt(nev / ffScalar);
@@ -448,6 +685,8 @@ namespace IterSolvers {
    void Destruct() {
       delete _tmp1, _tmp2, _tmp3, _tmp4, _tmp5, _tmp6;
       _tmp1 = _tmp2 = _tmp3 = _tmp4 = _tmp5 = _tmp6 = nullptr;
+      delete _lu_mat;
+      _lu_mat = nullptr;
    }
 };
 
@@ -488,9 +727,11 @@ int main() {
    cout << "Все данные успешно считанны из файлов." << endl << endl;
    cout << "Выберите метод для решения СЛАУ: " << endl;
    cout << "  1) МСГ для несимметричных матриц (без предобуславливания)" << endl;
-   cout << "  2) МСГ для нессиметричных матриц (диагональное предобуславливание)" << endl;
-   cout << "  3) ЛОС (без предобуславливания)" << endl;
-   cout << "  4) ЛОС (диагональное предобуславливание)" << endl;
+   cout << "  2) МСГ для несиметричных матриц (диагональное предобуславливание)" << endl;
+   cout << "  3) МСГ для несиметричных матриц (неполное LU(sq)-предобуславливание)" << endl;
+   cout << "  4) ЛОС (без предобуславливания)" << endl;
+   cout << "  5) ЛОС (диагональное предобуславливание)" << endl;
+   cout << "  6) ЛОС (неполное LU(sq)-предобуславливание)" << endl;
 
    int userCase;
    cin >> userCase;
@@ -524,6 +765,19 @@ int main() {
       }
       case 3:
       {
+         cout << "Начало вычислений для метода МСГ для несимметричных матриц (неполное LU(sq)-предобуславливание)" << endl << endl;
+         Timer timer;
+         double eps = 0;
+         IterSolvers::MSG_Assimetric::Init_LuPrecond(mat.Size(), mat.ggl.size());
+         size_t it = IterSolvers::MSG_Assimetric::LuPrecond(mat, f, x, eps);
+         timer.elapsed();
+         cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         cout << "Количество итераций: " << it << endl;
+         cout << "Относительная невязка: " << eps << endl;
+         break;
+      }
+      case 4:
+      {
          cout << "Начало вычислений для метода ЛОС (без предобуславливания)" << endl << endl;
          Timer timer;
          double eps = 0;
@@ -535,13 +789,26 @@ int main() {
          cout << "Относительная невязка: " << eps << endl;
          break;
       }
-      case 4:
+      case 5:
       {
          cout << "Начало вычислений для метода ЛОС (диагональное предобуславливание)" << endl << endl;
          Timer timer;
          double eps = 0;
          IterSolvers::LOS::Init_DiagPrecond(mat.Size());
          size_t it = IterSolvers::LOS::DiagPrecond(mat, f, x, eps);
+         timer.elapsed();
+         cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
+         cout << "Количество итераций: " << it << endl;
+         cout << "Относительная невязка: " << eps << endl;
+         break;
+      }
+      case 6:
+      {
+         cout << "Начало вычислений для метода ЛОС (неполное LU(sq)-предобуславливание)" << endl << endl;
+         Timer timer;
+         double eps = 0;
+         IterSolvers::LOS::Init_LuPrecond(mat.Size(), mat.ggl.size());
+         size_t it = IterSolvers::LOS::LuPrecond(mat, f, x, eps);
          timer.elapsed();
          cout << "Метод закончил работу за " << timer.elapsedValue * 1000 << " мс" << endl << endl;
          cout << "Количество итераций: " << it << endl;
