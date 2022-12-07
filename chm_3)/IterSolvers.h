@@ -30,17 +30,17 @@ namespace IterSolvers {
    namespace MSG_Assimetric {
       inline void Init_Default(size_t size);
 
-      size_t Default(Matrix& A, std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t Default(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
       inline void Init_DiagPrecond(size_t size);
 
-      size_t DiagPrecond(Matrix& A, std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t DiagPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
       inline void Init_LuPrecond(size_t diSize, size_t luSize);
 
-      size_t LuPrecond(Matrix& A, std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t LuPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
    }
 
    namespace LOS {
@@ -49,17 +49,17 @@ namespace IterSolvers {
 
       inline void Init_Default(size_t size);
 
-      size_t Default(Matrix& A, std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t Default(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
       inline void Init_DiagPrecond(size_t size);
 
-      size_t DiagPrecond(Matrix& A, std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t DiagPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
       inline void Init_LuPrecond(size_t diSize, size_t luSize);
 
-      size_t LuPrecond(Matrix& A, std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t LuPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
    }
 
    void Destruct();

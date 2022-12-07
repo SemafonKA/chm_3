@@ -27,24 +27,9 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    /// Умножение матрицы на вектор
    /// </summary>
    vector<double> Matrix::MultToVec(const vector<double>& right) const {
-      if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
-
       vector<double> result(right.size());
 
-      for (uint16_t i = 0; i < result.size(); i++)
-      {
-         // Умножаем диагональ
-         result[i] = di[i] * right[i];
-
-         // Умножаем нижний и верхний треугольники
-         for (uint32_t j = ig[i]; j < ig[i + 1]; j++)
-         {
-            result[i] += ggl[j] * right[jg[j]];
-            result[jg[j]] += ggu[j] * right[i];
-         }
-      }
-
-      return result;
+      return MultToVec(right, result);
    }
 
    /// <summary>
@@ -102,24 +87,9 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    /// Умножение транспонированной матрицы на вектор
    /// </summary>
    vector<double> Matrix::TranspMultToVec(const vector<double>& right) const {
-      if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
-
       vector<double> result(right.size());
 
-      for (uint16_t i = 0; i < result.size(); i++)
-      {
-         // Умножаем диагональ
-         result[i] = di[i] * right[i];
-
-         // Умножаем нижний и верхний треугольники
-         for (uint32_t j = ig[i]; j < ig[i + 1]; j++)
-         {
-            result[i] += ggu[j] * right[jg[j]];
-            result[jg[j]] += ggl[j] * right[i];
-         }
-      }
-
-      return result;
+      return TranspMultToVec(right, result);
    }
 
    Matrix& Matrix::operator= (Matrix&& right) noexcept {
@@ -133,6 +103,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    }
 
 // Конструкторы матрицы
+
    Matrix::Matrix() {}
 
    Matrix::Matrix(Matrix& right) :
@@ -154,6 +125,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    }
 
 // Статические методы матрицы
+
    Matrix Matrix::ReadFromFiles(uint16_t matrixSize, const string& igP, const string& jgP, const string& gglP, const string& gguP, const string& diP) {
       Matrix mat;
       bool isStartFromOne = false;

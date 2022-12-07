@@ -63,7 +63,7 @@ namespace IterSolvers {
          VecInit(_tmp4, size); // Массив для временного вектора
       }
 
-      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
          Init_Default(size);
 
@@ -144,7 +144,7 @@ namespace IterSolvers {
          VecInit(_tmp5, size); // Массив для вектора D
       }
 
-      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
          Init_DiagPrecond(size);
 
@@ -252,7 +252,7 @@ namespace IterSolvers {
          }
       }
 
-      size_t LuPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t LuPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
          Init_LuPrecond(size, A.ggl.size());
 
@@ -355,7 +355,7 @@ namespace IterSolvers {
          VecInit(_tmp4, size); // Массив для вектора Ar
       }
 
-      size_t Default(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
          Init_Default(size);
 
@@ -449,7 +449,7 @@ namespace IterSolvers {
          VecInit(_tmp6, size); // Массив для вектора tmp
       }
 
-      size_t DiagPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
          Init_DiagPrecond(size);
 
@@ -567,7 +567,7 @@ namespace IterSolvers {
          }
       }
 
-      size_t LuPrecond(Matrix& A, vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t LuPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
          Init_LuPrecond(size, A.ggl.size());
 
