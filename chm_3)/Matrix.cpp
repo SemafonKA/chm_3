@@ -20,6 +20,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 
 
 // Методы матрицы
+
    uint16_t Matrix::Size() const { return di.size(); }
 
    /// <summary>

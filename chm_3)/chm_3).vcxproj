@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="IterSolvers.cpp" />
     <ClCompile Include="LU.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -146,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chrono_Timer.h" />
+    <ClInclude Include="IterSolvers.h" />
     <ClInclude Include="LU.h" />
     <ClInclude Include="Matrix.h" />
   </ItemGroup>
