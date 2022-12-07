@@ -67,29 +67,29 @@ namespace IterSolvers {
          size_t size = x.size();
          Init_Default(size);
 
-         vector<double>& r = *_tmp1;
          vector<double>& tmp = *_tmp4;
+         vector<double>& r = *_tmp1;         // r0 = A^t * (f - A * x)
          A.MultToVec(x, tmp);
-         for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i]; // r0 = f - A * x
-         A.TranspMultToVec(tmp, r);                                  // r0 = A^t * (f - A * x)
+         for (uint16_t i = 0; i < size; i++) tmp[i] = f[i] - tmp[i];
+         A.TranspMultToVec(tmp, r);
 
          vector<double>& z = *_tmp2;
-         z = r;                        // z0
+         z = r;                              // z0
          vector<double>& t = *_tmp3;
 
-         double rPrevScalar = Vec::Scalar(r, r);         // (r_k-1, r_k-1)
+         double rPrevScalar = Vec::Scalar(r, r);
          double rScalar = 0;
-         double a = 0;                       // alpha_k,
+         double a = 0;                       // alpha_k
          double b = 0;                       // beta_k
-         double normF = Vec::Scalar(f, f);   // ||f||
+         double normF = Vec::Scalar(f, f);   // (f, f)
          eps = DBL_MAX;
 
-         size_t iter;
+         size_t iter = 0;
          for (iter = 1; iter <= maxIter && eps > minEps; iter++)
          {
             A.MultToVec(z, tmp);
-            A.TranspMultToVec(tmp, t);             // t = A^t * A * z_k-1
-            a = rPrevScalar / Vec::Scalar(t, z);   // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
+            A.TranspMultToVec(tmp, t);                   // t = A^t * A * z_k-1
+            a = rPrevScalar / Vec::Scalar(t, z);         // a_k = (r_k-1, r_k-1) / (t_k-1, z_k-1)
 
             for (uint16_t i = 0; i < size; i++)
             {
@@ -105,7 +105,7 @@ namespace IterSolvers {
             }
 
             rPrevScalar = rScalar;
-            eps = sqrt(rPrevScalar / normF);
+            eps = sqrt(rScalar / normF);
 
             // Выводим на то же место, что и раньше (со сдвигом каретки)
             if (debugOutput)
