@@ -1,21 +1,21 @@
-#include "LU.h"
+п»ї#include "LU.h"
 
 
 
 /// <summary>
-/// Конструктор с резервированием памяти под разложение
+/// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃ СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРёРµРј РїР°РјСЏС‚Рё РїРѕРґ СЂР°Р·Р»РѕР¶РµРЅРёРµ
 /// </summary>
-/// <param name="diSize"> - размер диагонали,</param>
-/// <param name="luSize"> - размер массивов нижнего и верхнего треугольника</param>
+/// <param name="diSize"> - СЂР°Р·РјРµСЂ РґРёР°РіРѕРЅР°Р»Рё,</param>
+/// <param name="luSize"> - СЂР°Р·РјРµСЂ РјР°СЃСЃРёРІРѕРІ РЅРёР¶РЅРµРіРѕ Рё РІРµСЂС…РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР°</param>
 LU::LU(size_t diSize, size_t luSize) {
    Resize(diSize, luSize);
 }
 
 
 /// <summary>
-/// Конструктор с построением неполного LU(sq)-разложения по матрице mat
+/// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃ РїРѕСЃС‚СЂРѕРµРЅРёРµРј РЅРµРїРѕР»РЅРѕРіРѕ LU(sq)-СЂР°Р·Р»РѕР¶РµРЅРёСЏ РїРѕ РјР°С‚СЂРёС†Рµ mat
 /// </summary>
-/// <param name="mat"> - матрица, по которой построится LU-разложение, с привязкой этой матрицы к объекту</param>
+/// <param name="mat"> - РјР°С‚СЂРёС†Р°, РїРѕ РєРѕС‚РѕСЂРѕР№ РїРѕСЃС‚СЂРѕРёС‚СЃСЏ LU-СЂР°Р·Р»РѕР¶РµРЅРёРµ, СЃ РїСЂРёРІСЏР·РєРѕР№ СЌС‚РѕР№ РјР°С‚СЂРёС†С‹ Рє РѕР±СЉРµРєС‚Сѓ</param>
 LU::LU(const Matrix& mat)
 {
    MakeLuFor(mat);
@@ -24,9 +24,9 @@ LU::LU(const Matrix& mat)
 
 
 /// <summary>
-/// Разложить матрицу mat в неполное LU(sq) - разложение
+/// Р Р°Р·Р»РѕР¶РёС‚СЊ РјР°С‚СЂРёС†Сѓ mat РІ РЅРµРїРѕР»РЅРѕРµ LU(sq) - СЂР°Р·Р»РѕР¶РµРЅРёРµ
 /// </summary>
-/// <param name="mat"> - матрица, которую требуется разложить. Она же будет использоваться для просмотра портрета матриц</param>
+/// <param name="mat"> - РјР°С‚СЂРёС†Р°, РєРѕС‚РѕСЂСѓСЋ С‚СЂРµР±СѓРµС‚СЃСЏ СЂР°Р·Р»РѕР¶РёС‚СЊ. РћРЅР° Р¶Рµ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° РїРѕСЂС‚СЂРµС‚Р° РјР°С‚СЂРёС†</param>
 void LU::MakeLuFor(const Matrix& mat) {
    parent = &mat;
    if (di.size() != mat.di.size())
@@ -79,10 +79,10 @@ void LU::Resize(size_t diSize, size_t luSize) {
 
 
 /// <summary>
-/// Умножение нижней матрицы L на вектор vec. Выделяет память под вектор ответа, не меняет матрицу LU
+/// РЈРјРЅРѕР¶РµРЅРёРµ РЅРёР¶РЅРµР№ РјР°С‚СЂРёС†С‹ L РЅР° РІРµРєС‚РѕСЂ vec. Р’С‹РґРµР»СЏРµС‚ РїР°РјСЏС‚СЊ РїРѕРґ РІРµРєС‚РѕСЂ РѕС‚РІРµС‚Р°, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†Сѓ LU
 /// </summary>
-/// <param name="vec"> - вектор, на который будет происходить умножение матрицы L</param>
-/// <returns>Вектор с результатом перемножения (выделяется в памяти)</returns>
+/// <param name="vec"> - РІРµРєС‚РѕСЂ, РЅР° РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РїСЂРѕРёСЃС…РѕРґРёС‚СЊ СѓРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ L</param>
+/// <returns>Р’РµРєС‚РѕСЂ СЃ СЂРµР·СѓР»СЊС‚Р°С‚РѕРј РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ (РІС‹РґРµР»СЏРµС‚СЃСЏ РІ РїР°РјСЏС‚Рё)</returns>
 std::vector<double> LU::LMultToVec(const std::vector<double>& vec) const
 {
    std::vector<double> ans(vec.size());
@@ -90,22 +90,22 @@ std::vector<double> LU::LMultToVec(const std::vector<double>& vec) const
 }
 
 /// <summary>
-/// Умножение нижней матрицы L на вектор vec. Ответ записывается в вектор ans, не меняет матрицу LU
+/// РЈРјРЅРѕР¶РµРЅРёРµ РЅРёР¶РЅРµР№ РјР°С‚СЂРёС†С‹ L РЅР° РІРµРєС‚РѕСЂ vec. РћС‚РІРµС‚ Р·Р°РїРёСЃС‹РІР°РµС‚СЃСЏ РІ РІРµРєС‚РѕСЂ ans, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†Сѓ LU
 /// </summary>
-/// <param name="vec"> - вектор, на который будет происходить умножение матрицы L;</param>
-/// <param name="ans"> - вектор, куда запишется ответ без выделения памяти (должен отличаться от vec!)</param>
-/// <returns>Ссылка на вектор ans</returns>
+/// <param name="vec"> - РІРµРєС‚РѕСЂ, РЅР° РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РїСЂРѕРёСЃС…РѕРґРёС‚СЊ СѓРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ L;</param>
+/// <param name="ans"> - РІРµРєС‚РѕСЂ, РєСѓРґР° Р·Р°РїРёС€РµС‚СЃСЏ РѕС‚РІРµС‚ Р±РµР· РІС‹РґРµР»РµРЅРёСЏ РїР°РјСЏС‚Рё (РґРѕР»Р¶РµРЅ РѕС‚Р»РёС‡Р°С‚СЊСЃСЏ РѕС‚ vec!)</param>
+/// <returns>РЎСЃС‹Р»РєР° РЅР° РІРµРєС‚РѕСЂ ans</returns>
 std::vector<double>& LU::LMultToVec(const std::vector<double>& vec, std::vector<double>& ans) const
 {
-   if (vec.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (vec.size() != ans.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (vec.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (vec.size() != ans.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    for (uint16_t i = 0; i < ans.size(); i++)
    {
-      // Умножаем диагональ
+      // РЈРјРЅРѕР¶Р°РµРј РґРёР°РіРѕРЅР°Р»СЊ
       ans[i] = di[i] * vec[i];
 
-      // Умножаем нижний треугольник
+      // РЈРјРЅРѕР¶Р°РµРј РЅРёР¶РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
       for (uint32_t j = parent->ig[i]; j < parent->ig[i + 1]; j++)
       {
          ans[i] += ggl[j] * vec[parent->jg[j]];
@@ -123,15 +123,15 @@ std::vector<double> LU::LTranspMultToVec(const std::vector<double>& vec) const
 
 std::vector<double>& LU::LTranspMultToVec(const std::vector<double>& vec, std::vector<double>& ans) const
 {
-   if (vec.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (vec.size() != ans.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (vec.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (vec.size() != ans.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    for (uint16_t i = 0; i < ans.size(); i++)
    {
-      // Умножаем диагональ
+      // РЈРјРЅРѕР¶Р°РµРј РґРёР°РіРѕРЅР°Р»СЊ
       ans[i] = di[i] * vec[i];
 
-      // Умножаем на верхний треугольник с данными нижнего
+      // РЈРјРЅРѕР¶Р°РµРј РЅР° РІРµСЂС…РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє СЃ РґР°РЅРЅС‹РјРё РЅРёР¶РЅРµРіРѕ
       for (uint32_t j = parent->ig[i]; j < parent->ig[i + 1]; j++)
       {
          ans[parent->jg[j]] += ggl[j] * vec[i];
@@ -142,10 +142,10 @@ std::vector<double>& LU::LTranspMultToVec(const std::vector<double>& vec, std::v
 }
 
 /// <summary>
-/// Умножение верхней матрицы U на вектор vec. Выделяет память под вектор ответа, не меняет матрицу LU
+/// РЈРјРЅРѕР¶РµРЅРёРµ РІРµСЂС…РЅРµР№ РјР°С‚СЂРёС†С‹ U РЅР° РІРµРєС‚РѕСЂ vec. Р’С‹РґРµР»СЏРµС‚ РїР°РјСЏС‚СЊ РїРѕРґ РІРµРєС‚РѕСЂ РѕС‚РІРµС‚Р°, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†Сѓ LU
 /// </summary>
-/// <param name="vec"> - вектор, на который будет происходить умножение матрицы U</param>
-/// <returns>Вектор с результатом перемножения (выделяется в памяти)</returns>
+/// <param name="vec"> - РІРµРєС‚РѕСЂ, РЅР° РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РїСЂРѕРёСЃС…РѕРґРёС‚СЊ СѓРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ U</param>
+/// <returns>Р’РµРєС‚РѕСЂ СЃ СЂРµР·СѓР»СЊС‚Р°С‚РѕРј РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ (РІС‹РґРµР»СЏРµС‚СЃСЏ РІ РїР°РјСЏС‚Рё)</returns>
 std::vector<double> LU::UMultToVec(const std::vector<double>& vec) const
 {
    std::vector<double> ans(vec.size());
@@ -153,22 +153,22 @@ std::vector<double> LU::UMultToVec(const std::vector<double>& vec) const
 }
 
 /// <summary>
-/// Умножение верхней матрицы U на вектор vec. Ответ записывается в вектор ans, не меняет матрицу LU
+/// РЈРјРЅРѕР¶РµРЅРёРµ РІРµСЂС…РЅРµР№ РјР°С‚СЂРёС†С‹ U РЅР° РІРµРєС‚РѕСЂ vec. РћС‚РІРµС‚ Р·Р°РїРёСЃС‹РІР°РµС‚СЃСЏ РІ РІРµРєС‚РѕСЂ ans, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†Сѓ LU
 /// </summary>
-/// <param name="vec"> - вектор, на который будет происходить умножение матрицы U;</param>
-/// <param name="ans"> - вектор, куда запишется ответ без выделения памяти (должен отличаться от vec!)</param>
-/// <returns>Ссылка на вектор ans</returns>
+/// <param name="vec"> - РІРµРєС‚РѕСЂ, РЅР° РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РїСЂРѕРёСЃС…РѕРґРёС‚СЊ СѓРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ U;</param>
+/// <param name="ans"> - РІРµРєС‚РѕСЂ, РєСѓРґР° Р·Р°РїРёС€РµС‚СЃСЏ РѕС‚РІРµС‚ Р±РµР· РІС‹РґРµР»РµРЅРёСЏ РїР°РјСЏС‚Рё (РґРѕР»Р¶РµРЅ РѕС‚Р»РёС‡Р°С‚СЊСЃСЏ РѕС‚ vec!)</param>
+/// <returns>РЎСЃС‹Р»РєР° РЅР° РІРµРєС‚РѕСЂ ans</returns>
 std::vector<double>& LU::UMultToVec(const std::vector<double>& vec, std::vector<double>& ans) const
 {
-   if (vec.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (vec.size() != ans.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (vec.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (vec.size() != ans.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    for (uint16_t i = 0; i < ans.size(); i++)
    {
-      // Умножаем диагональ
+      // РЈРјРЅРѕР¶Р°РµРј РґРёР°РіРѕРЅР°Р»СЊ
       ans[i] = di[i] * vec[i];
 
-      // Умножаем верхний треугольник
+      // РЈРјРЅРѕР¶Р°РµРј РІРµСЂС…РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє
       for (uint32_t j = parent->ig[i]; j < parent->ig[i + 1]; j++)
       {
          ans[parent->jg[j]] += ggu[j] * vec[i];
@@ -186,15 +186,15 @@ std::vector<double> LU::UTranspMultToVec(const std::vector<double>& vec) const
 
 std::vector<double>& LU::UTranspMultToVec(const std::vector<double>& vec, std::vector<double>& ans) const
 {
-   if (vec.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (vec.size() != ans.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (vec.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (vec.size() != ans.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    for (uint16_t i = 0; i < ans.size(); i++)
    {
-      // Умножаем диагональ
+      // РЈРјРЅРѕР¶Р°РµРј РґРёР°РіРѕРЅР°Р»СЊ
       ans[i] = di[i] * vec[i];
 
-      // Умножаем нижний треугольник с данными верхнего треугольника
+      // РЈРјРЅРѕР¶Р°РµРј РЅРёР¶РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРє СЃ РґР°РЅРЅС‹РјРё РІРµСЂС…РЅРµРіРѕ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР°
       for (uint32_t j = parent->ig[i]; j < parent->ig[i + 1]; j++)
       {
          ans[i] += ggu[j] * vec[parent->jg[j]];
@@ -207,15 +207,15 @@ std::vector<double>& LU::UTranspMultToVec(const std::vector<double>& vec, std::v
 
 
 /// <summary>
-/// Решение слау вида Lx = right. Не выделяет память под вектор x, не меняет матрицы LU
+/// Р РµС€РµРЅРёРµ СЃР»Р°Сѓ РІРёРґР° Lx = right. РќРµ РІС‹РґРµР»СЏРµС‚ РїР°РјСЏС‚СЊ РїРѕРґ РІРµРєС‚РѕСЂ x, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†С‹ LU
 /// </summary>
-/// <param name="right"> - вектор правой части уравнения;</param>
-/// <param name="x"> - вектор, куда будет записан ответ. Должен быть с уже выделенной памятью. Должен отличаться от right!</param>
-/// <returns>ссылка на вектор x</returns>
+/// <param name="right"> - РІРµРєС‚РѕСЂ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё СѓСЂР°РІРЅРµРЅРёСЏ;</param>
+/// <param name="x"> - РІРµРєС‚РѕСЂ, РєСѓРґР° Р±СѓРґРµС‚ Р·Р°РїРёСЃР°РЅ РѕС‚РІРµС‚. Р”РѕР»Р¶РµРЅ Р±С‹С‚СЊ СЃ СѓР¶Рµ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚СЊСЋ. Р”РѕР»Р¶РµРЅ РѕС‚Р»РёС‡Р°С‚СЊСЃСЏ РѕС‚ right!</param>
+/// <returns>СЃСЃС‹Р»РєР° РЅР° РІРµРєС‚РѕСЂ x</returns>
 std::vector<double>& LU::LSlauSolve(const std::vector<double>& right, std::vector<double>& x) const
 {
-   if (right.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (right.size() != x.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (right.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (right.size() != x.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    size_t size = x.size();
    for (size_t i = 0; i < size; i++)
@@ -232,10 +232,10 @@ std::vector<double>& LU::LSlauSolve(const std::vector<double>& right, std::vecto
 }
 
 /// <summary>
-/// Решение слау вида Lx = right. Выделяет память под вектор x, не меняет матрицы LU
+/// Р РµС€РµРЅРёРµ СЃР»Р°Сѓ РІРёРґР° Lx = right. Р’С‹РґРµР»СЏРµС‚ РїР°РјСЏС‚СЊ РїРѕРґ РІРµРєС‚РѕСЂ x, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†С‹ LU
 /// </summary>
-/// <param name="right"> - вектор правой части уравнения;</param>
-/// <returns>Полученный вектор x</returns>
+/// <param name="right"> - РІРµРєС‚РѕСЂ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё СѓСЂР°РІРЅРµРЅРёСЏ;</param>
+/// <returns>РџРѕР»СѓС‡РµРЅРЅС‹Р№ РІРµРєС‚РѕСЂ x</returns>
 std::vector<double> LU::LSlauSolve(const std::vector<double>& right) const
 {
    std::vector<double> x(right.size());
@@ -244,8 +244,8 @@ std::vector<double> LU::LSlauSolve(const std::vector<double>& right) const
 
 std::vector<double>& LU::LTranspSlauSolve(const std::vector<double>& right, std::vector<double>& x) const
 {
-   if (right.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (right.size() != x.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (right.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (right.size() != x.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    size_t size = x.size();
    for (size_t i = 0; i < size; i++)
@@ -271,15 +271,15 @@ std::vector<double> LU::LTranspSlauSolve(const std::vector<double>& right) const
 
 
 /// <summary>
-/// Решение слау вида Ux = right. Не выделяет память под вектор x, не меняет матрицы LU
+/// Р РµС€РµРЅРёРµ СЃР»Р°Сѓ РІРёРґР° Ux = right. РќРµ РІС‹РґРµР»СЏРµС‚ РїР°РјСЏС‚СЊ РїРѕРґ РІРµРєС‚РѕСЂ x, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†С‹ LU
 /// </summary>
-/// <param name="right"> - вектор правой части уравнения;</param>
-/// <param name="x"> - вектор, куда будет записан ответ. Должен быть с уже выделенной памятью. Должен отличаться от right!</param>
-/// <returns>ссылка на вектор x</returns>
+/// <param name="right"> - РІРµРєС‚РѕСЂ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё СѓСЂР°РІРЅРµРЅРёСЏ;</param>
+/// <param name="x"> - РІРµРєС‚РѕСЂ, РєСѓРґР° Р±СѓРґРµС‚ Р·Р°РїРёСЃР°РЅ РѕС‚РІРµС‚. Р”РѕР»Р¶РµРЅ Р±С‹С‚СЊ СЃ СѓР¶Рµ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚СЊСЋ. Р”РѕР»Р¶РµРЅ РѕС‚Р»РёС‡Р°С‚СЊСЃСЏ РѕС‚ right!</param>
+/// <returns>СЃСЃС‹Р»РєР° РЅР° РІРµРєС‚РѕСЂ x</returns>
 std::vector<double>& LU::USlauSolve(const std::vector<double>& right, std::vector<double>& x) const
 {
-   if (right.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (right.size() != x.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (right.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (right.size() != x.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    size_t size = x.size();
    for (size_t i = 0; i < size; i++) 
@@ -298,10 +298,10 @@ std::vector<double>& LU::USlauSolve(const std::vector<double>& right, std::vecto
 }
 
 /// <summary>
-/// Решение слау вида Ux = right. Выделяет память под вектор x, не меняет матрицы LU
+/// Р РµС€РµРЅРёРµ СЃР»Р°Сѓ РІРёРґР° Ux = right. Р’С‹РґРµР»СЏРµС‚ РїР°РјСЏС‚СЊ РїРѕРґ РІРµРєС‚РѕСЂ x, РЅРµ РјРµРЅСЏРµС‚ РјР°С‚СЂРёС†С‹ LU
 /// </summary>
-/// <param name="right"> - вектор правой части уравнения;</param>
-/// <returns>Полученный вектор x</returns>
+/// <param name="right"> - РІРµРєС‚РѕСЂ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё СѓСЂР°РІРЅРµРЅРёСЏ;</param>
+/// <returns>РџРѕР»СѓС‡РµРЅРЅС‹Р№ РІРµРєС‚РѕСЂ x</returns>
 std::vector<double> LU::USlauSolve(const std::vector<double>& right) const
 {
    std::vector<double> x(right.size());
@@ -310,8 +310,8 @@ std::vector<double> LU::USlauSolve(const std::vector<double>& right) const
 
 std::vector<double>& LU::UTranspSlauSolve(const std::vector<double>& right, std::vector<double>& x) const
 {
-   if (right.size() != di.size()) throw std::runtime_error("Размеры матрицы и вектора не совпадают.");
-   if (right.size() != x.size()) throw std::runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+   if (right.size() != di.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+   if (right.size() != x.size()) throw std::runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
    size_t size = x.size();
    for (size_t i = 0; i < size; i++)

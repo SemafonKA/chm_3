@@ -1,4 +1,4 @@
-#include "Matrix.h"
+п»ї#include "Matrix.h"
 
 using namespace std;
 
@@ -7,7 +7,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    auto file = ifstream(path);
    if (!file.is_open())
    {
-      throw runtime_error("Файл " + path + " отсутствует в директории");
+      throw runtime_error("Р¤Р°Р№Р» " + path + " РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ РґРёСЂРµРєС‚РѕСЂРёРё");
    }
    for (size_t i = 0; i < size; i++)
    {
@@ -19,12 +19,12 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 }
 
 
-// Методы матрицы
+// РњРµС‚РѕРґС‹ РјР°С‚СЂРёС†С‹
 
    uint16_t Matrix::Size() const { return di.size(); }
 
    /// <summary>
-   /// Умножение матрицы на вектор
+   /// РЈРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ РЅР° РІРµРєС‚РѕСЂ
    /// </summary>
    vector<double> Matrix::MultToVec(const vector<double>& right) const {
       vector<double> result(right.size());
@@ -33,18 +33,18 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    }
 
    /// <summary>
-   /// Умножение матрицы на вектор
+   /// РЈРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ РЅР° РІРµРєС‚РѕСЂ
    /// </summary>
    vector<double>& Matrix::MultToVec(const vector<double>& right, vector<double>& result) const {
-      if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
-      if (right.size() != result.size()) throw runtime_error("Размеры матрицы и результирующего вектора не совпадают.");      
+      if (right.size() != di.size()) throw runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+      if (right.size() != result.size()) throw runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");      
 
       for (uint16_t i = 0; i < result.size(); i++)
       {
-         // Умножаем диагональ
+         // РЈРјРЅРѕР¶Р°РµРј РґРёР°РіРѕРЅР°Р»СЊ
          result[i] = di[i] * right[i];
 
-         // Умножаем нижний и верхний треугольники
+         // РЈРјРЅРѕР¶Р°РµРј РЅРёР¶РЅРёР№ Рё РІРµСЂС…РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРєРё
          for (uint32_t j = ig[i]; j < ig[i + 1]; j++)
          {
             result[i] += ggl[j] * right[jg[j]];
@@ -60,18 +60,18 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    }
 
    /// <summary>
-   /// Умножение транспонированной матрицы на вектор
+   /// РЈРјРЅРѕР¶РµРЅРёРµ С‚СЂР°РЅСЃРїРѕРЅРёСЂРѕРІР°РЅРЅРѕР№ РјР°С‚СЂРёС†С‹ РЅР° РІРµРєС‚РѕСЂ
    /// </summary>
    vector<double>& Matrix::TranspMultToVec(const vector<double>& right, vector<double>& result) const {
-      if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
-      if (right.size() != result.size()) throw runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
+      if (right.size() != di.size()) throw runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
+      if (right.size() != result.size()) throw runtime_error("Р Р°Р·РјРµСЂС‹ РјР°С‚СЂРёС†С‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµРіРѕ РІРµРєС‚РѕСЂР° РЅРµ СЃРѕРІРїР°РґР°СЋС‚.");
 
       for (uint16_t i = 0; i < result.size(); i++)
       {
-         // Умножаем диагональ
+         // РЈРјРЅРѕР¶Р°РµРј РґРёР°РіРѕРЅР°Р»СЊ
          result[i] = di[i] * right[i];
 
-         // Умножаем нижний и верхний треугольники
+         // РЈРјРЅРѕР¶Р°РµРј РЅРёР¶РЅРёР№ Рё РІРµСЂС…РЅРёР№ С‚СЂРµСѓРіРѕР»СЊРЅРёРєРё
          for (uint32_t j = ig[i]; j < ig[i + 1]; j++)
          {
             result[i] += ggu[j] * right[jg[j]];
@@ -84,7 +84,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 
 
    /// <summary>
-   /// Умножение транспонированной матрицы на вектор
+   /// РЈРјРЅРѕР¶РµРЅРёРµ С‚СЂР°РЅСЃРїРѕРЅРёСЂРѕРІР°РЅРЅРѕР№ РјР°С‚СЂРёС†С‹ РЅР° РІРµРєС‚РѕСЂ
    /// </summary>
    vector<double> Matrix::TranspMultToVec(const vector<double>& right) const {
       vector<double> result(right.size());
@@ -102,7 +102,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
       return *this;
    }
 
-// Конструкторы матрицы
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂС‹ РјР°С‚СЂРёС†С‹
 
    Matrix::Matrix() {}
 
@@ -114,7 +114,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
       di{ right.di }
    {}
 
-   // Конструктор перемещения (нужен для метода ReadFromFiles)
+   // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРµСЂРµРјРµС‰РµРЅРёСЏ (РЅСѓР¶РµРЅ РґР»СЏ РјРµС‚РѕРґР° ReadFromFiles)
    Matrix::Matrix(Matrix&& right) noexcept
    {
       ig = std::move(right.ig);
@@ -124,7 +124,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
       di = std::move(right.di);
    }
 
-// Статические методы матрицы
+// РЎС‚Р°С‚РёС‡РµСЃРєРёРµ РјРµС‚РѕРґС‹ РјР°С‚СЂРёС†С‹
 
    Matrix Matrix::ReadFromFiles(uint16_t matrixSize, const string& igP, const string& jgP, const string& gglP, const string& gguP, const string& diP) {
       Matrix mat;
@@ -132,12 +132,12 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
       {
          mat.ig.resize(matrixSize + 1);
          auto igS = ifstream(igP);
-         if (!igS.is_open()) throw runtime_error("Файл " + igP + " отсутствует в директории.");
+         if (!igS.is_open()) throw runtime_error("Р¤Р°Р№Р» " + igP + " РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ РґРёСЂРµРєС‚РѕСЂРёРё.");
          for (uint16_t i = 0; i <= matrixSize; i++)
          {
             igS >> mat.ig[i];
          }
-         // Если массив ig в файле начинался с 1, то меняем его под наши параметры (под 0)
+         // Р•СЃР»Рё РјР°СЃСЃРёРІ ig РІ С„Р°Р№Р»Рµ РЅР°С‡РёРЅР°Р»СЃСЏ СЃ 1, С‚Рѕ РјРµРЅСЏРµРј РµРіРѕ РїРѕРґ РЅР°С€Рё РїР°СЂР°РјРµС‚СЂС‹ (РїРѕРґ 0)
          if (isStartFromOne = mat.ig[0])
          {
             for (uint16_t i = 0; i <= matrixSize; i++)
@@ -149,7 +149,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 
       {
          auto jgS = ifstream(jgP);
-         if (!jgS.is_open()) throw runtime_error("Файл " + jgP + " отсутствует в директории.");
+         if (!jgS.is_open()) throw runtime_error("Р¤Р°Р№Р» " + jgP + " РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ РґРёСЂРµРєС‚РѕСЂРёРё.");
          mat.jg.resize(mat.ig.back());
          for (uint32_t i = 0; i < mat.jg.size(); i++)
          {

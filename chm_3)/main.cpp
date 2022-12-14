@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <fstream>
 
 #include "Chrono_Timer.h"
@@ -14,13 +14,13 @@ int main() {
    vector<double> f;
    vector<double> x;
 
-   cout << "*** Ïðîãðàììà äëÿ âû÷èñëåíèÿ ÑËÀÓ òð¸õøàãîâûìè ìåòîäàìè ***" << endl;
-   cout << "Íà÷èíàåòñÿ ñ÷èòûâàíèå äàííûõ èç ôàéëà..." << endl;
+   cout << "*** ÐŸÑ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° Ð´Ð»Ñ Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ñ Ð¡Ð›ÐÐ£ Ñ‚Ñ€Ñ‘Ñ…ÑˆÐ°Ð³Ð¾Ð²Ñ‹Ð¼Ð¸ Ð¼ÐµÑ‚Ð¾Ð´Ð°Ð¼Ð¸ ***" << endl;
+   cout << "ÐÐ°Ñ‡Ð¸Ð½Ð°ÐµÑ‚ÑÑ ÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°Ð½Ð¸Ðµ Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð¸Ð· Ñ„Ð°Ð¹Ð»Ð°..." << endl;
 
    auto kuslauF = ifstream("./iofiles/kuslau.txt");
    if (!kuslauF.is_open())
    {
-      cout << "Ôàéë ./iofiles/kuslau.txt îòñóòñòâóåò â äèðåêòîðèè" << endl;
+      cout << "Ð¤Ð°Ð¹Ð» ./iofiles/kuslau.txt Ð¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ Ð² Ð´Ð¸Ñ€ÐµÐºÑ‚Ð¾Ñ€Ð¸Ð¸" << endl;
       return 1;
    }
    kuslauF >> matrixSize >> IterSolvers::maxIter >> IterSolvers::minEps;
@@ -40,14 +40,14 @@ int main() {
 
    IterSolvers::globalDebugOutput = false;
 
-   cout << "Âñå äàííûå óñïåøíî ñ÷èòàííû èç ôàéëîâ." << endl << endl;
-   cout << "Âûáåðèòå ìåòîä äëÿ ðåøåíèÿ ÑËÀÓ: " << endl;
-   cout << "  1) ÌÑÃ äëÿ íåñèììåòðè÷íûõ ìàòðèö (áåç ïðåäîáóñëàâëèâàíèÿ)" << endl;
-   cout << "  2) ÌÑÃ äëÿ íåñèìåòðè÷íûõ ìàòðèö (äèàãîíàëüíîå ïðåäîáóñëàâëèâàíèå)" << endl;
-   cout << "  3) ÌÑÃ äëÿ íåñèìåòðè÷íûõ ìàòðèö (íåïîëíîå LU(sq)-ïðåäîáóñëàâëèâàíèå)" << endl;
-   cout << "  4) ËÎÑ (áåç ïðåäîáóñëàâëèâàíèÿ)" << endl;
-   cout << "  5) ËÎÑ (äèàãîíàëüíîå ïðåäîáóñëàâëèâàíèå)" << endl;
-   cout << "  6) ËÎÑ (íåïîëíîå LU(sq)-ïðåäîáóñëàâëèâàíèå)" << endl;
+   cout << "Ð’ÑÐµ Ð´Ð°Ð½Ð½Ñ‹Ðµ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ ÑÑ‡Ð¸Ñ‚Ð°Ð½Ð½Ñ‹ Ð¸Ð· Ñ„Ð°Ð¹Ð»Ð¾Ð²." << endl << endl;
+   cout << "Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð¼ÐµÑ‚Ð¾Ð´ Ð´Ð»Ñ Ñ€ÐµÑˆÐµÐ½Ð¸Ñ Ð¡Ð›ÐÐ£: " << endl;
+   cout << "  1) ÐœÐ¡Ð“ Ð´Ð»Ñ Ð½ÐµÑÐ¸Ð¼Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡Ð½Ñ‹Ñ… Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† (Ð±ÐµÐ· Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ñ)" << endl;
+   cout << "  2) ÐœÐ¡Ð“ Ð´Ð»Ñ Ð½ÐµÑÐ¸Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡Ð½Ñ‹Ñ… Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† (Ð´Ð¸Ð°Ð³Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl;
+   cout << "  3) ÐœÐ¡Ð“ Ð´Ð»Ñ Ð½ÐµÑÐ¸Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡Ð½Ñ‹Ñ… Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† (Ð½ÐµÐ¿Ð¾Ð»Ð½Ð¾Ðµ LU(sq)-Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl;
+   cout << "  4) Ð›ÐžÐ¡ (Ð±ÐµÐ· Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ñ)" << endl;
+   cout << "  5) Ð›ÐžÐ¡ (Ð´Ð¸Ð°Ð³Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl;
+   cout << "  6) Ð›ÐžÐ¡ (Ð½ÐµÐ¿Ð¾Ð»Ð½Ð¾Ðµ LU(sq)-Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl;
 
    int userCase;
    cin >> userCase;
@@ -55,86 +55,86 @@ int main() {
    {
       case 1:
       {
-         cout << "Íà÷àëî âû÷èñëåíèé äëÿ ìåòîäà ÌÑÃ äëÿ íåñèììåòðè÷íûõ ìàòðèö (áåç ïðåäîáóñëàâëèâàíèÿ)" << endl << endl;
+         cout << "ÐÐ°Ñ‡Ð°Ð»Ð¾ Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Ð¼ÐµÑ‚Ð¾Ð´Ð° ÐœÐ¡Ð“ Ð´Ð»Ñ Ð½ÐµÑÐ¸Ð¼Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡Ð½Ñ‹Ñ… Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† (Ð±ÐµÐ· Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ñ)" << endl << endl;
          double eps = 0;
          IterSolvers::MSG_Assimetric::Init_Default(mat.Size());
          Timer timer;
          size_t it = IterSolvers::MSG_Assimetric::Default(mat, f, x, eps);
          timer.elapsed();
          IterSolvers::Destruct();
-         cout << "Ìåòîä çàêîí÷èë ðàáîòó çà " << timer.elapsedValue * 1000 << " ìñ" << endl << endl;
-         cout << "Êîëè÷åñòâî èòåðàöèé: " << it << endl;
-         cout << "Îòíîñèòåëüíàÿ íåâÿçêà: " << eps << endl;
+         cout << "ÐœÐµÑ‚Ð¾Ð´ Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð» Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ð·Ð° " << timer.elapsedValue * 1000 << " Ð¼Ñ" << endl << endl;
+         cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹: " << it << endl;
+         cout << "ÐžÑ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð½ÐµÐ²ÑÐ·ÐºÐ°: " << eps << endl;
          break;
       }
       case 2:
       {
-         cout << "Íà÷àëî âû÷èñëåíèé äëÿ ìåòîäà ÌÑÃ äëÿ íåñèììåòðè÷íûõ ìàòðèö (äèàãîíàëüíîå ïðåäîáóñëàâëèâàíèå)" << endl << endl;
+         cout << "ÐÐ°Ñ‡Ð°Ð»Ð¾ Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Ð¼ÐµÑ‚Ð¾Ð´Ð° ÐœÐ¡Ð“ Ð´Ð»Ñ Ð½ÐµÑÐ¸Ð¼Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡Ð½Ñ‹Ñ… Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† (Ð´Ð¸Ð°Ð³Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl << endl;
          double eps = 0;
          IterSolvers::MSG_Assimetric::Init_DiagPrecond(mat.Size());
          Timer timer;
          size_t it = IterSolvers::MSG_Assimetric::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          IterSolvers::Destruct();
-         cout << "Ìåòîä çàêîí÷èë ðàáîòó çà " << timer.elapsedValue * 1000 << " ìñ" << endl << endl;
-         cout << "Êîëè÷åñòâî èòåðàöèé: " << it << endl;
-         cout << "Îòíîñèòåëüíàÿ íåâÿçêà: " << eps << endl;
+         cout << "ÐœÐµÑ‚Ð¾Ð´ Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð» Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ð·Ð° " << timer.elapsedValue * 1000 << " Ð¼Ñ" << endl << endl;
+         cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹: " << it << endl;
+         cout << "ÐžÑ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð½ÐµÐ²ÑÐ·ÐºÐ°: " << eps << endl;
          break;
       }
       case 3:
       {
-         cout << "Íà÷àëî âû÷èñëåíèé äëÿ ìåòîäà ÌÑÃ äëÿ íåñèììåòðè÷íûõ ìàòðèö (íåïîëíîå LU(sq)-ïðåäîáóñëàâëèâàíèå)" << endl << endl;
+         cout << "ÐÐ°Ñ‡Ð°Ð»Ð¾ Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Ð¼ÐµÑ‚Ð¾Ð´Ð° ÐœÐ¡Ð“ Ð´Ð»Ñ Ð½ÐµÑÐ¸Ð¼Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡Ð½Ñ‹Ñ… Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† (Ð½ÐµÐ¿Ð¾Ð»Ð½Ð¾Ðµ LU(sq)-Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl << endl;
          double eps = 0;
          IterSolvers::MSG_Assimetric::Init_LuPrecond(mat.Size(), mat.ggl.size());
          Timer timer;
          size_t it = IterSolvers::MSG_Assimetric::LuPrecond(mat, f, x, eps);
          timer.elapsed();
          IterSolvers::Destruct();
-         cout << "Ìåòîä çàêîí÷èë ðàáîòó çà " << timer.elapsedValue * 1000 << " ìñ" << endl << endl;
-         cout << "Êîëè÷åñòâî èòåðàöèé: " << it << endl;
-         cout << "Îòíîñèòåëüíàÿ íåâÿçêà: " << eps << endl;
+         cout << "ÐœÐµÑ‚Ð¾Ð´ Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð» Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ð·Ð° " << timer.elapsedValue * 1000 << " Ð¼Ñ" << endl << endl;
+         cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹: " << it << endl;
+         cout << "ÐžÑ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð½ÐµÐ²ÑÐ·ÐºÐ°: " << eps << endl;
          break;
       }
       case 4:
       {
-         cout << "Íà÷àëî âû÷èñëåíèé äëÿ ìåòîäà ËÎÑ (áåç ïðåäîáóñëàâëèâàíèÿ)" << endl << endl;
+         cout << "ÐÐ°Ñ‡Ð°Ð»Ð¾ Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Ð¼ÐµÑ‚Ð¾Ð´Ð° Ð›ÐžÐ¡ (Ð±ÐµÐ· Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ñ)" << endl << endl;
          double eps = 0;
          IterSolvers::LOS::Init_Default(mat.Size());
          Timer timer;
          size_t it = IterSolvers::LOS::Default(mat, f, x, eps);
          timer.elapsed();
          IterSolvers::Destruct();
-         cout << "Ìåòîä çàêîí÷èë ðàáîòó çà " << timer.elapsedValue * 1000 << " ìñ" << endl << endl;
-         cout << "Êîëè÷åñòâî èòåðàöèé: " << it << endl;
-         cout << "Îòíîñèòåëüíàÿ íåâÿçêà: " << eps << endl;
+         cout << "ÐœÐµÑ‚Ð¾Ð´ Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð» Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ð·Ð° " << timer.elapsedValue * 1000 << " Ð¼Ñ" << endl << endl;
+         cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹: " << it << endl;
+         cout << "ÐžÑ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð½ÐµÐ²ÑÐ·ÐºÐ°: " << eps << endl;
          break;
       }
       case 5:
       {
-         cout << "Íà÷àëî âû÷èñëåíèé äëÿ ìåòîäà ËÎÑ (äèàãîíàëüíîå ïðåäîáóñëàâëèâàíèå)" << endl << endl;
+         cout << "ÐÐ°Ñ‡Ð°Ð»Ð¾ Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Ð¼ÐµÑ‚Ð¾Ð´Ð° Ð›ÐžÐ¡ (Ð´Ð¸Ð°Ð³Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl << endl;
          double eps = 0;
          IterSolvers::LOS::Init_DiagPrecond(mat.Size());
          Timer timer;
          size_t it = IterSolvers::LOS::DiagPrecond(mat, f, x, eps);
          timer.elapsed();
          IterSolvers::Destruct();
-         cout << "Ìåòîä çàêîí÷èë ðàáîòó çà " << timer.elapsedValue * 1000 << " ìñ" << endl << endl;
-         cout << "Êîëè÷åñòâî èòåðàöèé: " << it << endl;
-         cout << "Îòíîñèòåëüíàÿ íåâÿçêà: " << eps << endl;
+         cout << "ÐœÐµÑ‚Ð¾Ð´ Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð» Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ð·Ð° " << timer.elapsedValue * 1000 << " Ð¼Ñ" << endl << endl;
+         cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹: " << it << endl;
+         cout << "ÐžÑ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð½ÐµÐ²ÑÐ·ÐºÐ°: " << eps << endl;
          break;
       }
       case 6:
       {
-         cout << "Íà÷àëî âû÷èñëåíèé äëÿ ìåòîäà ËÎÑ (íåïîëíîå LU(sq)-ïðåäîáóñëàâëèâàíèå)" << endl << endl;
+         cout << "ÐÐ°Ñ‡Ð°Ð»Ð¾ Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Ð¼ÐµÑ‚Ð¾Ð´Ð° Ð›ÐžÐ¡ (Ð½ÐµÐ¿Ð¾Ð»Ð½Ð¾Ðµ LU(sq)-Ð¿Ñ€ÐµÐ´Ð¾Ð±ÑƒÑÐ»Ð°Ð²Ð»Ð¸Ð²Ð°Ð½Ð¸Ðµ)" << endl << endl;
          double eps = 0;
          IterSolvers::LOS::Init_LuPrecond(mat.Size(), mat.ggl.size());
          Timer timer;
          size_t it = IterSolvers::LOS::LuPrecond(mat, f, x, eps);
          timer.elapsed();
          IterSolvers::Destruct();
-         cout << "Ìåòîä çàêîí÷èë ðàáîòó çà " << timer.elapsedValue * 1000 << " ìñ" << endl << endl;
-         cout << "Êîëè÷åñòâî èòåðàöèé: " << it << endl;
-         cout << "Îòíîñèòåëüíàÿ íåâÿçêà: " << eps << endl;
+         cout << "ÐœÐµÑ‚Ð¾Ð´ Ð·Ð°ÐºÐ¾Ð½Ñ‡Ð¸Ð» Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ð·Ð° " << timer.elapsedValue * 1000 << " Ð¼Ñ" << endl << endl;
+         cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¸Ñ‚ÐµÑ€Ð°Ñ†Ð¸Ð¹: " << it << endl;
+         cout << "ÐžÑ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð°Ñ Ð½ÐµÐ²ÑÐ·ÐºÐ°: " << eps << endl;
          break;
       }
       default:
@@ -143,7 +143,7 @@ int main() {
 
    if (IterSolvers::globalDebugOutput)
    {
-      cout << "Ïîëó÷åííîå ðåøåíèå: " << endl;
+      cout << "ÐŸÐ¾Ð»ÑƒÑ‡ÐµÐ½Ð½Ð¾Ðµ Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ: " << endl;
       cout.precision(15);
       cout.setf(std::ios_base::fixed);
    }

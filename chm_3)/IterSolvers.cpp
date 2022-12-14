@@ -1,9 +1,9 @@
-#include "IterSolvers.h"
+п»ї#include "IterSolvers.h"
 using namespace std;
 
 namespace Vec {
    inline double Scalar(const vector<double>& l, const vector<double>& r) {
-      if (l.size() != r.size()) throw runtime_error("Размеры векторов не совпадают");
+      if (l.size() != r.size()) throw runtime_error("Р Р°Р·РјРµСЂС‹ РІРµРєС‚РѕСЂРѕРІ РЅРµ СЃРѕРІРїР°РґР°СЋС‚");
 
       double res = 0.0;
       for (size_t i = 0; i < l.size(); i++)
@@ -16,7 +16,7 @@ namespace Vec {
 
    // l or r may be similar vectors to ans
    inline void Mult(const vector<double>& l, const vector<double>& r, vector<double>& ans) {
-      if (ans.size() != l.size() || ans.size() != r.size()) throw runtime_error("Ошибка: размеры векторов должны совпадать.");
+      if (ans.size() != l.size() || ans.size() != r.size()) throw runtime_error("РћС€РёР±РєР°: СЂР°Р·РјРµСЂС‹ РІРµРєС‚РѕСЂРѕРІ РґРѕР»Р¶РЅС‹ СЃРѕРІРїР°РґР°С‚СЊ.");
 
       for (size_t i = 0; i < ans.size(); i++)
       {
@@ -24,7 +24,7 @@ namespace Vec {
       }
    }
    inline vector<double> Mult(const vector<double>& l, const vector<double>& r) {
-      if (r.size() != l.size()) throw runtime_error("Ошибка: размеры векторов должны совпадать.");
+      if (r.size() != l.size()) throw runtime_error("РћС€РёР±РєР°: СЂР°Р·РјРµСЂС‹ РІРµРєС‚РѕСЂРѕРІ РґРѕР»Р¶РЅС‹ СЃРѕРІРїР°РґР°С‚СЊ.");
       vector<double> ans(l.size());
 
       for (size_t i = 0; i < ans.size(); i++)
@@ -57,10 +57,10 @@ namespace IterSolvers {
 
    namespace MSG_Assimetric {
       inline void Init_Default(size_t size) {
-         VecInit(_tmp1, size); // Массив для вектора r метода
-         VecInit(_tmp2, size); // Массив для вектора z
-         VecInit(_tmp3, size); // Массив для вектора t
-         VecInit(_tmp4, size); // Массив для временного вектора
+         VecInit(_tmp1, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° r РјРµС‚РѕРґР°
+         VecInit(_tmp2, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° z
+         VecInit(_tmp3, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° t
+         VecInit(_tmp4, size); // РњР°СЃСЃРёРІ РґР»СЏ РІСЂРµРјРµРЅРЅРѕРіРѕ РІРµРєС‚РѕСЂР°
       }
 
       size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
@@ -107,10 +107,10 @@ namespace IterSolvers {
             rPrevScalar = rScalar;
             eps = sqrt(rScalar / normF);
 
-            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            // Р’С‹РІРѕРґРёРј РЅР° С‚Рѕ Р¶Рµ РјРµСЃС‚Рѕ, С‡С‚Рѕ Рё СЂР°РЅСЊС€Рµ (СЃРѕ СЃРґРІРёРіРѕРј РєР°СЂРµС‚РєРё)
             if (debugOutput)
             {
-               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+               cout << format("\rРС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}", iter, eps);
             }
             if (isinf(eps))
             {
@@ -123,15 +123,15 @@ namespace IterSolvers {
             cout << endl;
             if (isinf(eps))
             {
-               cout << "Выход по переполнению метода" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РїРµСЂРµРїРѕР»РЅРµРЅРёСЋ РјРµС‚РѕРґР°" << endl << endl;
             }
             else if (iter > maxIter)
             {
-               cout << "Выход по числу итераций" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ С‡РёСЃР»Сѓ РёС‚РµСЂР°С†РёР№" << endl << endl;
             }
             else
             {
-               cout << "Выход по относительной невязке" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРµ" << endl << endl;
             }
          }
 
@@ -141,14 +141,14 @@ namespace IterSolvers {
 
       inline void Init_DiagPrecond(size_t size) {
          Init_Default(size);
-         VecInit(_tmp5, size); // Массив для вектора D
+         VecInit(_tmp5, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° D
       }
 
       size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
          Init_DiagPrecond(size);
 
-         vector<double>& D = *_tmp5;         // D = обратный корень от диагонали матрицы
+         vector<double>& D = *_tmp5;         // D = РѕР±СЂР°С‚РЅС‹Р№ РєРѕСЂРµРЅСЊ РѕС‚ РґРёР°РіРѕРЅР°Р»Рё РјР°С‚СЂРёС†С‹
          for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
 
          for (uint16_t i = 0; i < size; i++) x[i] /= D[i];     // local_x
@@ -202,10 +202,10 @@ namespace IterSolvers {
             rPrevScalar = rScalar;
             eps = sqrt(rPrevScalar / normF);
 
-            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            // Р’С‹РІРѕРґРёРј РЅР° С‚Рѕ Р¶Рµ РјРµСЃС‚Рѕ, С‡С‚Рѕ Рё СЂР°РЅСЊС€Рµ (СЃРѕ СЃРґРІРёРіРѕРј РєР°СЂРµС‚РєРё)
             if (debugOutput)
             {
-               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+               cout << format("\rРС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}", iter, eps);
             }
             if (isinf(eps))
             {
@@ -219,15 +219,15 @@ namespace IterSolvers {
             cout << endl;
             if (isinf(eps))
             {
-               cout << "Выход по переполнению метода" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РїРµСЂРµРїРѕР»РЅРµРЅРёСЋ РјРµС‚РѕРґР°" << endl << endl;
             }
             else if (iter > maxIter)
             {
-               cout << "Выход по числу итераций" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ С‡РёСЃР»Сѓ РёС‚РµСЂР°С†РёР№" << endl << endl;
             }
             else
             {
-               cout << "Выход по относительной невязке" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРµ" << endl << endl;
             }
          }
 
@@ -236,11 +236,11 @@ namespace IterSolvers {
 
 
       inline void Init_LuPrecond(size_t diSize, size_t luSize) {
-         VecInit(_tmp1, diSize); // Массив для вектора r метода
-         VecInit(_tmp2, diSize); // Массив для вектора z
-         VecInit(_tmp3, diSize); // Массив для вектора t
-         VecInit(_tmp4, diSize); // Массив для временного вектора
-         VecInit(_tmp5, diSize); // Массив для вектора local_x
+         VecInit(_tmp1, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° r РјРµС‚РѕРґР°
+         VecInit(_tmp2, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° z
+         VecInit(_tmp3, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° t
+         VecInit(_tmp4, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІСЂРµРјРµРЅРЅРѕРіРѕ РІРµРєС‚РѕСЂР°
+         VecInit(_tmp5, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° local_x
 
          if (_lu_mat == nullptr)
          {
@@ -257,7 +257,7 @@ namespace IterSolvers {
          Init_LuPrecond(size, A.ggl.size());
 
          LU& lu = *_lu_mat;
-         lu.MakeLuFor(A);                          // неполное LU(sq) разложение для матрицы A
+         lu.MakeLuFor(A);                          // РЅРµРїРѕР»РЅРѕРµ LU(sq) СЂР°Р·Р»РѕР¶РµРЅРёРµ РґР»СЏ РјР°С‚СЂРёС†С‹ A
 
          vector<double>& local_x = *_tmp5;         // local_x
          lu.UMultToVec(x, local_x);
@@ -311,10 +311,10 @@ namespace IterSolvers {
             rPrevScalar = rScalar;
             eps = sqrt(rPrevScalar / normF);
 
-            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            // Р’С‹РІРѕРґРёРј РЅР° С‚Рѕ Р¶Рµ РјРµСЃС‚Рѕ, С‡С‚Рѕ Рё СЂР°РЅСЊС€Рµ (СЃРѕ СЃРґРІРёРіРѕРј РєР°СЂРµС‚РєРё)
             if (debugOutput)
             {
-               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+               cout << format("\rРС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}", iter, eps);
             }
             if (isinf(eps))
             {
@@ -328,15 +328,15 @@ namespace IterSolvers {
             cout << endl;
             if (isinf(eps))
             {
-               cout << "Выход по переполнению метода" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РїРµСЂРµРїРѕР»РЅРµРЅРёСЋ РјРµС‚РѕРґР°" << endl << endl;
             }
             else if (iter > maxIter)
             {
-               cout << "Выход по числу итераций" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ С‡РёСЃР»Сѓ РёС‚РµСЂР°С†РёР№" << endl << endl;
             }
             else
             {
-               cout << "Выход по относительной невязке" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРµ" << endl << endl;
             }
          }
 
@@ -349,10 +349,10 @@ namespace IterSolvers {
 
 
       inline void Init_Default(size_t size) {
-         VecInit(_tmp1, size); // Массив для вектора r метода
-         VecInit(_tmp2, size); // Массив для вектора z
-         VecInit(_tmp3, size); // Массив для вектора p
-         VecInit(_tmp4, size); // Массив для вектора Ar
+         VecInit(_tmp1, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° r РјРµС‚РѕРґР°
+         VecInit(_tmp2, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° z
+         VecInit(_tmp3, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° p
+         VecInit(_tmp4, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° Ar
       }
 
       size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
@@ -407,11 +407,11 @@ namespace IterSolvers {
             nev = Vec::Scalar(r, r);
             eps = sqrt(nev / ffScalar);
 
-            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            // Р’С‹РІРѕРґРёРј РЅР° С‚Рѕ Р¶Рµ РјРµСЃС‚Рѕ, С‡С‚Рѕ Рё СЂР°РЅСЊС€Рµ (СЃРѕ СЃРґРІРёРіРѕРј РєР°СЂРµС‚РєРё)
             if (debugOutput)
             {
-               //cout << format("Итерация: {0:<10} относительная невязка: {1:<15.3e}\n", iter, eps);
-               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+               //cout << format("РС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}\n", iter, eps);
+               cout << format("\rРС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}", iter, eps);
             }
             if (isinf(eps))
             {
@@ -424,15 +424,15 @@ namespace IterSolvers {
             cout << endl;
             if (isinf(eps))
             {
-               cout << "Выход по переполнению метода" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РїРµСЂРµРїРѕР»РЅРµРЅРёСЋ РјРµС‚РѕРґР°" << endl << endl;
             }
             else if (iter > maxIter)
             {
-               cout << "Выход по числу итераций" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ С‡РёСЃР»Сѓ РёС‚РµСЂР°С†РёР№" << endl << endl;
             }
             else
             {
-               cout << "Выход по относительной невязке" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРµ" << endl << endl;
             }
          }
 
@@ -441,19 +441,19 @@ namespace IterSolvers {
 
 
       inline void Init_DiagPrecond(size_t size) {
-         VecInit(_tmp1, size); // Массив для вектора r метода
-         VecInit(_tmp2, size); // Массив для вектора z
-         VecInit(_tmp3, size); // Массив для вектора p
-         VecInit(_tmp4, size); // Массив для вектора Ar
-         VecInit(_tmp5, size); // Массив для вектора D
-         VecInit(_tmp6, size); // Массив для вектора tmp
+         VecInit(_tmp1, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° r РјРµС‚РѕРґР°
+         VecInit(_tmp2, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° z
+         VecInit(_tmp3, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° p
+         VecInit(_tmp4, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° Ar
+         VecInit(_tmp5, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° D
+         VecInit(_tmp6, size); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° tmp
       }
 
       size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
          Init_DiagPrecond(size);
 
-         vector<double>& D = *_tmp5;               // обратный корень от диагонали матрицы
+         vector<double>& D = *_tmp5;               // РѕР±СЂР°С‚РЅС‹Р№ РєРѕСЂРµРЅСЊ РѕС‚ РґРёР°РіРѕРЅР°Р»Рё РјР°С‚СЂРёС†С‹
          for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
 
          vector<double>& r = *_tmp1;               // r0 = L^-1 * (f - A * x)
@@ -517,11 +517,11 @@ namespace IterSolvers {
             nev = Vec::Scalar(r, r);
             eps = sqrt(nev / ffScalar);
 
-            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            // Р’С‹РІРѕРґРёРј РЅР° С‚Рѕ Р¶Рµ РјРµСЃС‚Рѕ, С‡С‚Рѕ Рё СЂР°РЅСЊС€Рµ (СЃРѕ СЃРґРІРёРіРѕРј РєР°СЂРµС‚РєРё)
             if (debugOutput)
             {
-               //cout << format("Итерация: {0:<10} относительная невязка: {1:<15.3e}\n", iter, eps);
-               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+               //cout << format("РС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}\n", iter, eps);
+               cout << format("\rРС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}", iter, eps);
             }
             if (isinf(eps))
             {
@@ -534,15 +534,15 @@ namespace IterSolvers {
             cout << endl;
             if (isinf(eps))
             {
-               cout << "Выход по переполнению метода" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РїРµСЂРµРїРѕР»РЅРµРЅРёСЋ РјРµС‚РѕРґР°" << endl << endl;
             }
             else if (iter > maxIter)
             {
-               cout << "Выход по числу итераций" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ С‡РёСЃР»Сѓ РёС‚РµСЂР°С†РёР№" << endl << endl;
             }
             else
             {
-               cout << "Выход по относительной невязке" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРµ" << endl << endl;
             }
          }
 
@@ -551,11 +551,11 @@ namespace IterSolvers {
 
 
       inline void Init_LuPrecond(size_t diSize, size_t luSize) {
-         VecInit(_tmp1, diSize); // Массив для вектора r метода
-         VecInit(_tmp2, diSize); // Массив для вектора z
-         VecInit(_tmp3, diSize); // Массив для вектора p
-         VecInit(_tmp4, diSize); // Массив для вектора Ar
-         VecInit(_tmp5, diSize); // Массив для вектора tmp
+         VecInit(_tmp1, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° r РјРµС‚РѕРґР°
+         VecInit(_tmp2, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° z
+         VecInit(_tmp3, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° p
+         VecInit(_tmp4, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° Ar
+         VecInit(_tmp5, diSize); // РњР°СЃСЃРёРІ РґР»СЏ РІРµРєС‚РѕСЂР° tmp
 
          if (_lu_mat == nullptr)
          {
@@ -638,11 +638,11 @@ namespace IterSolvers {
             nev = Vec::Scalar(r, r);
             eps = sqrt(nev / ffScalar);
 
-            // Выводим на то же место, что и раньше (со сдвигом каретки)
+            // Р’С‹РІРѕРґРёРј РЅР° С‚Рѕ Р¶Рµ РјРµСЃС‚Рѕ, С‡С‚Рѕ Рё СЂР°РЅСЊС€Рµ (СЃРѕ СЃРґРІРёРіРѕРј РєР°СЂРµС‚РєРё)
             if (debugOutput)
             {
-               //cout << format("Итерация: {0:<10} относительная невязка: {1:<15.3e}\n", iter, eps);
-               cout << format("\rИтерация: {0:<10} относительная невязка: {1:<15.3e}", iter, eps);
+               //cout << format("РС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}\n", iter, eps);
+               cout << format("\rРС‚РµСЂР°С†РёСЏ: {0:<10} РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ РЅРµРІСЏР·РєР°: {1:<15.3e}", iter, eps);
             }
             if (isinf(eps))
             {
@@ -655,15 +655,15 @@ namespace IterSolvers {
             cout << endl;
             if (isinf(eps))
             {
-               cout << "Выход по переполнению метода" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РїРµСЂРµРїРѕР»РЅРµРЅРёСЋ РјРµС‚РѕРґР°" << endl << endl;
             }
             else if (iter > maxIter)
             {
-               cout << "Выход по числу итераций" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ С‡РёСЃР»Сѓ РёС‚РµСЂР°С†РёР№" << endl << endl;
             }
             else
             {
-               cout << "Выход по относительной невязке" << endl << endl;
+               cout << "Р’С‹С…РѕРґ РїРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РЅРµРІСЏР·РєРµ" << endl << endl;
             }
          }
 
