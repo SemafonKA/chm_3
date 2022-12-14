@@ -38,7 +38,7 @@ namespace IterSolvers {
       size_t DiagPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
-      inline void Init_LuPrecond(size_t diSize, size_t luSize);
+      inline void Init_LuPrecond(size_t diSize, const Matrix& A);
 
       size_t LuPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
    }
@@ -57,7 +57,7 @@ namespace IterSolvers {
       size_t DiagPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
-      inline void Init_LuPrecond(size_t diSize, size_t luSize);
+      inline void Init_LuPrecond(size_t diSize, const Matrix& A);
 
       size_t LuPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
    }

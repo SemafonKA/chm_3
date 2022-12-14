@@ -39,34 +39,33 @@ void LU::MakeLuFor(const Matrix& mat) {
    const auto& ig = mat.ig;
    const auto& jg = mat.jg;
 
-   di[0] = sqrt(mat.di[0]);
-   for (size_t i = 1; i < mat.Size(); i++)
+   for (size_t i = 0; i < mat.Size(); i++)
    {
-      di[i] = 0;
+      double di_accum = 0;
       for (size_t j = ig[i]; j < ig[i + 1]; j++)
       {
          size_t k = ig[i];
          size_t v = ig[jg[j]];
-         ggl[j] = ggu[j] = 0;
+         double ggl_accum = 0, ggu_accum = 0;
          while (k < j && v < ig[jg[j] + 1])
          {
             if (jg[k] > jg[v]) v++;
             else if (jg[k] < jg[v]) k++;
             else
             {
-               ggl[j] += ggl[k] * ggu[v];
-               ggu[j] += ggl[v] * ggu[k];
+               ggl_accum += ggl[k] * ggu[v];
+               ggu_accum += ggl[v] * ggu[k];
                k++;
                v++;
             }
          }
-         ggl[j] = (mat.ggl[j] - ggl[j]) / di[jg[j]];
-         ggu[j] = (mat.ggu[j] - ggu[j]) / di[jg[j]];
+         ggl[j] = (mat.ggl[j] - ggl_accum) / di[jg[j]];
+         ggu[j] = (mat.ggu[j] - ggu_accum) / di[jg[j]];
 
-         di[i] += ggl[j] * ggu[j];
+         di_accum += ggl[j] * ggu[j];
       }
 
-      di[i] = sqrt(mat.di[i] - di[i]);
+      di[i] = sqrt(mat.di[i] - di_accum);
    }
 }
 

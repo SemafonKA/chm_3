@@ -65,7 +65,6 @@ namespace IterSolvers {
 
       size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
-         Init_Default(size);
 
          vector<double>& tmp = *_tmp4;
          vector<double>& r = *_tmp1;         // r0 = A^t * (f - A * x)
@@ -146,7 +145,6 @@ namespace IterSolvers {
 
       size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
-         Init_DiagPrecond(size);
 
          vector<double>& D = *_tmp5;         // D = обратный корень от диагонали матрицы
          for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
@@ -235,7 +233,7 @@ namespace IterSolvers {
       }
 
 
-      inline void Init_LuPrecond(size_t diSize, size_t luSize) {
+      inline void Init_LuPrecond(size_t diSize, const Matrix& A) {
          VecInit(_tmp1, diSize); // Массив для вектора r метода
          VecInit(_tmp2, diSize); // Массив для вектора z
          VecInit(_tmp3, diSize); // Массив для вектора t
@@ -244,20 +242,18 @@ namespace IterSolvers {
 
          if (_lu_mat == nullptr)
          {
-            _lu_mat = new LU(diSize, luSize);
+            _lu_mat = new LU(A);
          }
-         else if (_lu_mat->ggl.size() != luSize || _lu_mat->di.size() != diSize)
+         else
          {
-            _lu_mat->Resize(diSize, luSize);
+            _lu_mat->MakeLuFor(A);
          }
       }
 
       size_t LuPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
-         Init_LuPrecond(size, A.ggl.size());
 
-         LU& lu = *_lu_mat;
-         lu.MakeLuFor(A);                          // неполное LU(sq) разложение для матрицы A
+         LU& lu = *_lu_mat;                        // неполное LU(sq) разложение для матрицы A
 
          vector<double>& local_x = *_tmp5;         // local_x
          lu.UMultToVec(x, local_x);
@@ -357,7 +353,6 @@ namespace IterSolvers {
 
       size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
-         Init_Default(size);
 
          vector<double>& r = *_tmp1;
          A.MultToVec(x, r);
@@ -451,7 +446,6 @@ namespace IterSolvers {
 
       size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
-         Init_DiagPrecond(size);
 
          vector<double>& D = *_tmp5;               // обратный корень от диагонали матрицы
          for (uint16_t i = 0; i < size; i++) D[i] = 1 / sqrt(A.di[i]);
@@ -550,7 +544,7 @@ namespace IterSolvers {
       }
 
 
-      inline void Init_LuPrecond(size_t diSize, size_t luSize) {
+      inline void Init_LuPrecond(size_t diSize, const Matrix& A) {
          VecInit(_tmp1, diSize); // Массив для вектора r метода
          VecInit(_tmp2, diSize); // Массив для вектора z
          VecInit(_tmp3, diSize); // Массив для вектора p
@@ -559,20 +553,18 @@ namespace IterSolvers {
 
          if (_lu_mat == nullptr)
          {
-            _lu_mat = new LU(diSize, luSize);
+            _lu_mat = new LU(A);
          }
-         else if (_lu_mat->ggl.size() != luSize || _lu_mat->di.size() != diSize)
+         else
          {
-            _lu_mat->Resize(diSize, luSize);
+            _lu_mat->MakeLuFor(A);
          }
       }
 
       size_t LuPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
-         Init_LuPrecond(size, A.ggl.size());
 
          LU& lu = *_lu_mat;
-         lu.MakeLuFor(A);
 
          vector<double>& tmp = *_tmp5;
          vector<double>& r = *_tmp1;               // r0 = L^-1 * (f - A * x)

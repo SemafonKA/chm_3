@@ -85,7 +85,7 @@ int main() {
       {
          cout << "Начало вычислений для метода МСГ для несимметричных матриц (неполное LU(sq)-предобуславливание)" << endl << endl;
          double eps = 0;
-         IterSolvers::MSG_Assimetric::Init_LuPrecond(mat.Size(), mat.ggl.size());
+         IterSolvers::MSG_Assimetric::Init_LuPrecond(mat.Size(), mat);
          Timer timer;
          size_t it = IterSolvers::MSG_Assimetric::LuPrecond(mat, f, x, eps);
          timer.elapsed();
@@ -127,7 +127,7 @@ int main() {
       {
          cout << "Начало вычислений для метода ЛОС (неполное LU(sq)-предобуславливание)" << endl << endl;
          double eps = 0;
-         IterSolvers::LOS::Init_LuPrecond(mat.Size(), mat.ggl.size());
+         IterSolvers::LOS::Init_LuPrecond(mat.Size(), mat);
          Timer timer;
          size_t it = IterSolvers::LOS::LuPrecond(mat, f, x, eps);
          timer.elapsed();
