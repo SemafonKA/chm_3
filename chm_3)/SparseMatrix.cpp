@@ -1,4 +1,4 @@
-﻿#include "Matrix.h"
+﻿#include "SparseMatrix.h"
 
 using namespace std;
 
@@ -21,12 +21,12 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 
 // Методы матрицы
 
-   uint16_t Matrix::Size() const { return di.size(); }
+   uint16_t SparseMatrix::Size() const { return di.size(); }
 
    /// <summary>
    /// Умножение матрицы на вектор
    /// </summary>
-   vector<double> Matrix::MultToVec(const vector<double>& right) const {
+   vector<double> SparseMatrix::MultToVec(const vector<double>& right) const {
       vector<double> result(right.size());
 
       return MultToVec(right, result);
@@ -35,7 +35,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    /// <summary>
    /// Умножение матрицы на вектор
    /// </summary>
-   vector<double>& Matrix::MultToVec(const vector<double>& right, vector<double>& result) const {
+   vector<double>& SparseMatrix::MultToVec(const vector<double>& right, vector<double>& result) const {
       if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
       if (right.size() != result.size()) throw runtime_error("Размеры матрицы и результирующего вектора не совпадают.");      
 
@@ -55,14 +55,14 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
       return result;
    }
 
-   vector<double> Matrix::operator*(const vector<double>& right) const {
+   vector<double> SparseMatrix::operator*(const vector<double>& right) const {
       return MultToVec(right);
    }
 
    /// <summary>
    /// Умножение транспонированной матрицы на вектор
    /// </summary>
-   vector<double>& Matrix::TranspMultToVec(const vector<double>& right, vector<double>& result) const {
+   vector<double>& SparseMatrix::TranspMultToVec(const vector<double>& right, vector<double>& result) const {
       if (right.size() != di.size()) throw runtime_error("Размеры матрицы и вектора не совпадают.");
       if (right.size() != result.size()) throw runtime_error("Размеры матрицы и результирующего вектора не совпадают.");
 
@@ -86,13 +86,13 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    /// <summary>
    /// Умножение транспонированной матрицы на вектор
    /// </summary>
-   vector<double> Matrix::TranspMultToVec(const vector<double>& right) const {
+   vector<double> SparseMatrix::TranspMultToVec(const vector<double>& right) const {
       vector<double> result(right.size());
 
       return TranspMultToVec(right, result);
    }
 
-   Matrix& Matrix::operator= (Matrix&& right) noexcept {
+   SparseMatrix& SparseMatrix::operator= (SparseMatrix&& right) noexcept {
       ig = std::move(right.ig);
       jg = std::move(right.jg);
       ggl = std::move(right.ggl);
@@ -104,9 +104,9 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 
 // Конструкторы матрицы
 
-   Matrix::Matrix() {}
+   SparseMatrix::SparseMatrix() {}
 
-   Matrix::Matrix(Matrix& right) :
+   SparseMatrix::SparseMatrix(SparseMatrix& right) :
       ig{ right.ig },
       jg{ right.jg },
       ggl{ right.ggl },
@@ -115,7 +115,7 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
    {}
 
    // Конструктор перемещения (нужен для метода ReadFromFiles)
-   Matrix::Matrix(Matrix&& right) noexcept
+   SparseMatrix::SparseMatrix(SparseMatrix&& right) noexcept
    {
       ig = std::move(right.ig);
       jg = std::move(right.jg);
@@ -126,8 +126,8 @@ vector<double> ReadVecFromFile(size_t size, const string& path) {
 
 // Статические методы матрицы
 
-   Matrix Matrix::ReadFromFiles(uint16_t matrixSize, const string& igP, const string& jgP, const string& gglP, const string& gguP, const string& diP) {
-      Matrix mat;
+   SparseMatrix SparseMatrix::ReadFromFiles(uint16_t matrixSize, const string& igP, const string& jgP, const string& gglP, const string& gguP, const string& diP) {
+      SparseMatrix mat;
       bool isStartFromOne = false;
       {
          mat.ig.resize(matrixSize + 1);

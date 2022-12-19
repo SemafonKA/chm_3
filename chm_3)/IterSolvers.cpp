@@ -56,14 +56,14 @@ namespace IterSolvers {
    }
 
    namespace MSG_Assimetric {
-      inline void Init_Default(size_t size) {
+      void Init_Default(size_t size) {
          VecInit(_tmp1, size); // Массив для вектора r метода
          VecInit(_tmp2, size); // Массив для вектора z
          VecInit(_tmp3, size); // Массив для вектора t
          VecInit(_tmp4, size); // Массив для временного вектора
       }
 
-      size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t Default(const SparseMatrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
 
          vector<double>& tmp = *_tmp4;
@@ -138,12 +138,12 @@ namespace IterSolvers {
       }
 
 
-      inline void Init_DiagPrecond(size_t size) {
+      void Init_DiagPrecond(size_t size) {
          Init_Default(size);
          VecInit(_tmp5, size); // Массив для вектора D
       }
 
-      size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t DiagPrecond(const SparseMatrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
 
          vector<double>& D = *_tmp5;         // D = обратный корень от диагонали матрицы
@@ -233,7 +233,7 @@ namespace IterSolvers {
       }
 
 
-      inline void Init_LuPrecond(size_t diSize, const Matrix& A) {
+      void Init_LuPrecond(size_t diSize, const SparseMatrix& A) {
          VecInit(_tmp1, diSize); // Массив для вектора r метода
          VecInit(_tmp2, diSize); // Массив для вектора z
          VecInit(_tmp3, diSize); // Массив для вектора t
@@ -250,7 +250,7 @@ namespace IterSolvers {
          }
       }
 
-      size_t LuPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t LuPrecond(const SparseMatrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          size_t size = x.size();
 
          LU& lu = *_lu_mat;                        // неполное LU(sq) разложение для матрицы A
@@ -344,14 +344,14 @@ namespace IterSolvers {
       size_t resetIter = 10;
 
 
-      inline void Init_Default(size_t size) {
+      void Init_Default(size_t size) {
          VecInit(_tmp1, size); // Массив для вектора r метода
          VecInit(_tmp2, size); // Массив для вектора z
          VecInit(_tmp3, size); // Массив для вектора p
          VecInit(_tmp4, size); // Массив для вектора Ar
       }
 
-      size_t Default(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t Default(const SparseMatrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
 
          vector<double>& r = *_tmp1;
@@ -435,7 +435,7 @@ namespace IterSolvers {
       }
 
 
-      inline void Init_DiagPrecond(size_t size) {
+      void Init_DiagPrecond(size_t size) {
          VecInit(_tmp1, size); // Массив для вектора r метода
          VecInit(_tmp2, size); // Массив для вектора z
          VecInit(_tmp3, size); // Массив для вектора p
@@ -444,7 +444,7 @@ namespace IterSolvers {
          VecInit(_tmp6, size); // Массив для вектора tmp
       }
 
-      size_t DiagPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t DiagPrecond(const SparseMatrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
 
          vector<double>& D = *_tmp5;               // обратный корень от диагонали матрицы
@@ -544,7 +544,7 @@ namespace IterSolvers {
       }
 
 
-      inline void Init_LuPrecond(size_t diSize, const Matrix& A) {
+      void Init_LuPrecond(size_t diSize, const SparseMatrix& A) {
          VecInit(_tmp1, diSize); // Массив для вектора r метода
          VecInit(_tmp2, diSize); // Массив для вектора z
          VecInit(_tmp3, diSize); // Массив для вектора p
@@ -561,7 +561,7 @@ namespace IterSolvers {
          }
       }
 
-      size_t LuPrecond(const Matrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
+      size_t LuPrecond(const SparseMatrix& A, const vector<double>& f, vector<double>& x, double& eps, bool debugOutput) {
          uint16_t size = x.size();
 
          LU& lu = *_lu_mat;

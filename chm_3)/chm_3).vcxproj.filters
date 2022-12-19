@@ -18,7 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix.cpp">
+    <ClCompile Include="SparseMatrix.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="LU.cpp">
@@ -61,7 +61,7 @@
     <ClInclude Include="Chrono_Timer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h">
+    <ClInclude Include="SparseMatrix.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="LU.h">

@@ -1,14 +1,14 @@
 ﻿#pragma once
 #include <vector>
-#include "Matrix.h"
+#include "SparseMatrix.h"
 
-// Неполное разложение LU(sq) матрицы разреженного строчно-столбцового формата Matrix
+// Неполное разложение LU(sq) матрицы разреженного строчно-столбцового формата SparseMatrix
 // Не хранит портрет матрицы, но использует портрет исходной матрицы (а также ссылается на неё)
 class LU {
 
 // Блок внутренних переменных разложения LU
 public:
-   const Matrix* parent = nullptr;
+   const SparseMatrix* parent = nullptr;
 
    // Вектор диагональных элементов LU разложения. В данном случае диагонали L и U совпадают
    std::vector<double> di;
@@ -34,7 +34,7 @@ public:
    /// Конструктор с построением неполного LU(sq)-разложения по матрице mat
    /// </summary>
    /// <param name="mat"> - матрица, по которой построится LU-разложение, с привязкой этой матрицы к объекту</param>
-   LU(const Matrix& mat);
+   LU(const SparseMatrix& mat);
 
 
 // Блок основных нестатических методов класса
@@ -44,7 +44,7 @@ public:
    /// Разложить матрицу mat в неполное LU(sq) - разложение
    /// </summary>
    /// <param name="mat"> - матрица, которую требуется разложить. Она же будет использоваться для просмотра портрета матриц</param>
-   void MakeLuFor(const Matrix& mat);
+   void MakeLuFor(const SparseMatrix& mat);
 
    /// <summary>
    /// Метод изменения размера разложения

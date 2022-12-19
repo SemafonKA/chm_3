@@ -16,7 +16,7 @@ LU::LU(size_t diSize, size_t luSize) {
 /// Конструктор с построением неполного LU(sq)-разложения по матрице mat
 /// </summary>
 /// <param name="mat"> - матрица, по которой построится LU-разложение, с привязкой этой матрицы к объекту</param>
-LU::LU(const Matrix& mat)
+LU::LU(const SparseMatrix& mat)
 {
    MakeLuFor(mat);
 }
@@ -27,7 +27,7 @@ LU::LU(const Matrix& mat)
 /// Разложить матрицу mat в неполное LU(sq) - разложение
 /// </summary>
 /// <param name="mat"> - матрица, которую требуется разложить. Она же будет использоваться для просмотра портрета матриц</param>
-void LU::MakeLuFor(const Matrix& mat) {
+void LU::MakeLuFor(const SparseMatrix& mat) {
    parent = &mat;
    if (di.size() != mat.di.size())
       di.resize(mat.di.size());

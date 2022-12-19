@@ -11,7 +11,7 @@ std::vector<double> ReadVecFromFile(size_t size, const std::string& path);
 /// Класс объектов матриц, хранящихся в разреженном строчно-столбцовом виде
 /// <para> Точность хранения элементов - double </para>
 /// </summary>
-class Matrix {
+class SparseMatrix {
 // Переменные матрицы
 public:
    /// <summary>
@@ -93,18 +93,18 @@ public:
    std::vector<double> TranspMultToVec(const std::vector<double>& right) const;
    std::vector<double>& TranspMultToVec(const std::vector<double>& right, std::vector<double>& result) const;
 
-   Matrix& operator= (Matrix&& right) noexcept;
+   SparseMatrix& operator= (SparseMatrix&& right) noexcept;
 
 // Конструкторы матрицы
 public:
-   Matrix();
+   SparseMatrix();
 
-   Matrix(Matrix& right);
+   SparseMatrix(SparseMatrix& right);
 
    // Конструктор перемещения (нужен для метода ReadFromFiles)
-   Matrix(Matrix&& right) noexcept;
+   SparseMatrix(SparseMatrix&& right) noexcept;
 
 // Статические методы матрицы
 public:
-   static Matrix ReadFromFiles(uint16_t matrixSize, const std::string& igP, const std::string& jgP, const std::string& gglP, const std::string& gguP, const std::string& diP);
+   static SparseMatrix ReadFromFiles(uint16_t matrixSize, const std::string& igP, const std::string& jgP, const std::string& gglP, const std::string& gguP, const std::string& diP);
 };

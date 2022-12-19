@@ -10,7 +10,7 @@ int main() {
    setlocale(LC_ALL, "ru-RU");
 
    uint16_t matrixSize;
-   Matrix mat;
+   SparseMatrix mat;
    vector<double> f;
    vector<double> x;
 
@@ -28,7 +28,7 @@ int main() {
 
    try
    {
-      mat = Matrix::ReadFromFiles(matrixSize, "./iofiles/ig.txt", "./iofiles/jg.txt", "./iofiles/ggl.txt", "./iofiles/ggu.txt", "./iofiles/di.txt");
+      mat = SparseMatrix::ReadFromFiles(matrixSize, "./iofiles/ig.txt", "./iofiles/jg.txt", "./iofiles/ggl.txt", "./iofiles/ggu.txt", "./iofiles/di.txt");
       f = ReadVecFromFile(matrixSize, "./iofiles/pr.txt");
       x = ReadVecFromFile(matrixSize, "./iofiles/initX.txt");
    }

@@ -4,7 +4,7 @@
 #include <format>
 #include <iostream>
 
-#include "Matrix.h"
+#include "SparseMatrix.h"
 #include "LU.h"
 
 
@@ -28,38 +28,38 @@ namespace IterSolvers {
    inline void VecInit(std::vector<double>*& vec, size_t size);
 
    namespace MSG_Assimetric {
-      inline void Init_Default(size_t size);
+      void Init_Default(size_t size);
 
-      size_t Default(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
-
-
-      inline void Init_DiagPrecond(size_t size);
-
-      size_t DiagPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t Default(const SparseMatrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
-      inline void Init_LuPrecond(size_t diSize, const Matrix& A);
+      void Init_DiagPrecond(size_t size);
 
-      size_t LuPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t DiagPrecond(const SparseMatrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+
+
+      void Init_LuPrecond(size_t diSize, const SparseMatrix& A);
+
+      size_t LuPrecond(const SparseMatrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
    }
 
    namespace LOS {
       extern size_t resetIter;
 
 
-      inline void Init_Default(size_t size);
+      void Init_Default(size_t size);
 
-      size_t Default(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
-
-
-      inline void Init_DiagPrecond(size_t size);
-
-      size_t DiagPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t Default(const SparseMatrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
 
 
-      inline void Init_LuPrecond(size_t diSize, const Matrix& A);
+      void Init_DiagPrecond(size_t size);
 
-      size_t LuPrecond(const Matrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+      size_t DiagPrecond(const SparseMatrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
+
+
+      void Init_LuPrecond(size_t diSize, const SparseMatrix& A);
+
+      size_t LuPrecond(const SparseMatrix& A, const std::vector<double>& f, std::vector<double>& x, double& eps, bool debugOutput = globalDebugOutput);
    }
 
    void Destruct();
